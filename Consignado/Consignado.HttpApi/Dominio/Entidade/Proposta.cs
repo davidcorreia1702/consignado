@@ -23,7 +23,9 @@
         public int Numero { get; set; }
         public string Cidade { get; set; }
         public string UF { get; set; }
+        public TipoAssinatura TipoAssinatura { get; set; }
     }
 
     public enum TipoOperacao { Novo, Portabilidade, Refinanciamento }
+    public enum TipoAssinatura { Eletronica, Hibrida, Figital }
 }

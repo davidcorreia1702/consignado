@@ -10,17 +10,11 @@ namespace Consignado.Controllers
     [Route("[controller]")]
     public class PropostaController : ControllerBase
     {
-        public record EnderecoModel(string CepResidencial, string EnderecoResidencial, int NumeroResidencial, string CidadeResidencial, string UfResidencial);
+        List<string> ufs = new List<string> {"SP","RJ","MG","ES","DF","BA","RS","PR" };
 
-        public record OperacaoModel(string CodigoConveniada, TipoOperacao TipoOperacao ,string Prazo, decimal ValorOperacao, decimal Prestacao);
-
-        public record RendimentoModel(string Matricula, decimal ValorRendimento, string Banco, string Agencia, string Conta, string TipoConta, string Conveniada);
-        public record ContatoModel(string Ddd, string Telefone, string Email);
-
-        public record NovalPropostaModel(string CpfAgente, string Cpf, ContatoModel Contato, EnderecoModel Endereco, OperacaoModel Operacao, RendimentoModel Rendimento);
-        //public record NovalPropostaModel(string CpfAgente, string Cpf, string Nome, DateTime DataNascimento, string Ddd1, string Telefone1, string email,
-        //    string Endereco, string Numero, string UF, string Cidade, string Conveniada, string TipoOperacao, string Prazo, decimal ValorOperacao, decimal Prestacao,
-        //    string Matricula, decimal ValorRendimento, string Banco, string Agencia, string Conta, string TipoConta);
+        public record MovaPropostaModel(string CpfAgente, string Cpf, string Ddd, string Telefone, string Email, string CepResidencial, string EnderecoResidencial, 
+            int NumeroResidencial, string CidadeResidencial, string UfResidencial, string CodigoConveniada, TipoOperacao TipoOperacao, string Prazo, decimal ValorOperacao, 
+            decimal Prestacao, string Matricula, decimal ValorRendimento, string Banco, string Agencia, string Conta, string TipoConta);
 
 
         public PropostaController()
@@ -29,20 +23,20 @@ namespace Consignado.Controllers
 
         [HttpPost(Name = "gerar-proposta")]
         public async Task<IActionResult> GerarProposta(
-            [FromBody] NovalPropostaModel input,
+            [FromBody] MovaPropostaModel input,
             [FromServices] PropostaRepositorio propostaRepositorio,
             CancellationToken cancellationToken)
         {
             if(string.IsNullOrEmpty(input.Cpf))
                 return BadRequest("CPF é obrigatório");
 
-            if(input.Rendimento is null)
+            if(input.Matricula is null || input.ValorRendimento <= 0 || string.IsNullOrEmpty(input.Banco) || string.IsNullOrEmpty(input.Agencia) || string.IsNullOrEmpty(input.Conta) || string.IsNullOrEmpty(input.TipoConta))
                 return BadRequest("Dados de rendimento é obrigatório");
 
-            if (input.Endereco is null)
+            if (string.IsNullOrEmpty(input.EnderecoResidencial) || input.NumeroResidencial <= 0 || string.IsNullOrEmpty(input.CidadeResidencial) || string.IsNullOrEmpty(input.UfResidencial))
                 return BadRequest("Endereço é obrigatorio");
 
-            if (input.Contato is null)
+            if (string.IsNullOrEmpty(input.Email) || string.IsNullOrEmpty(input.Telefone) || string.IsNullOrEmpty(input.Ddd))
                 return BadRequest("Dados de contato é obrigatório");
 
             //consultar as propostas por cpf
@@ -66,7 +60,7 @@ namespace Consignado.Controllers
 
             //consultar conveniadas 
             //verificar se a minha proposta é do tipo refinanciamento e se é aceita pelo convenio
-            var conveniada = await propostaRepositorio.RecuperarConveniada(input.Operacao.CodigoConveniada, cancellationToken);
+            var conveniada = await propostaRepositorio.RecuperarConveniada(input.CodigoConveniada, cancellationToken);
             if (conveniada.HasNoValue)
                 return BadRequest("Conveniada inválida");
 
@@ -74,31 +68,31 @@ namespace Consignado.Controllers
             var proposta = new Proposta();
             proposta.Cliente = input.Cpf;
             proposta.CpfAgente = input.CpfAgente;
-            proposta.DDD = input.Contato.Ddd;
-            proposta.Telefone = input.Contato.Telefone;
-            proposta.Email = input.Contato.Email;
-            proposta.Matricula = input.Rendimento.Matricula;
-            proposta.ValorRendimento = input.Rendimento.ValorRendimento;
-            proposta.CodigoConveniada = input.Operacao.CodigoConveniada;
-            proposta.TipoOperacao = input.Operacao.TipoOperacao;
-            proposta.Prazo = input.Operacao.Prazo;
-            proposta.ValorOperacao = input.Operacao.ValorOperacao;
-            proposta.Endereco = input.Endereco.EnderecoResidencial;
-            proposta.Numero = input.Endereco.NumeroResidencial;
-            proposta.Cidade = input.Endereco.CidadeResidencial;
-            proposta.UF = input.Endereco.UfResidencial;
+            proposta.DDD = input.Ddd;
+            proposta.Telefone = input.Telefone;
+            proposta.Email = input.Email;
+            proposta.Matricula = input.Matricula;
+            proposta.ValorRendimento = input.ValorRendimento;
+            proposta.CodigoConveniada = input.CodigoConveniada;
+            proposta.TipoOperacao = input.TipoOperacao;
+            proposta.Prazo = input.Prazo;
+            proposta.ValorOperacao = input.ValorOperacao;
+            proposta.Endereco = input.EnderecoResidencial;
+            proposta.Numero = input.NumeroResidencial;
+            proposta.Cidade = input.CidadeResidencial;
+            proposta.UF = input.UfResidencial;
 
-            if (input.Operacao.TipoOperacao == TipoOperacao.Refinanciamento && !conveniada.Value.AceitaRefinanciamento)
+            if (input.TipoOperacao == TipoOperacao.Refinanciamento && !conveniada.Value.AceitaRefinanciamento)
                 return BadRequest("Conveniada não aceita Refinanciamento");
 
             //validar restriçao de valores de acordo com o convenio
-            if(!conveniada.Value.Restricoes.IsNullOrEmpty() && conveniada.Value.Restricoes.Any(restricao => restricao.Uf == input.Endereco.UfResidencial && input.Operacao.ValorOperacao > restricao.ValorLimite))
+            if(!conveniada.Value.Restricoes.IsNullOrEmpty() && conveniada.Value.Restricoes.Any(restricao => restricao.Uf == input.UfResidencial && input.ValorOperacao > restricao.ValorLimite))
                 return BadRequest("Conveniada com restricao para o valor solicitado");
 
             
 
             //somar a quantidade de parcelas a idade <= 80 anos
-            var dataFutura = DateTime.Now.AddMonths(Convert.ToInt32(input.Operacao.Prazo));
+            var dataFutura = DateTime.Now.AddMonths(Convert.ToInt32(input.Prazo));
             var diferencaEmAnos = dataFutura.Year - cliente.Value.DataNascimento.Year;
 
             if (dataFutura < cliente.Value.DataNascimento.AddYears(diferencaEmAnos))
@@ -106,6 +100,14 @@ namespace Consignado.Controllers
 
             if(diferencaEmAnos > 80)
                 return BadRequest("Idade ao realizar a ultima parcela excede de 80 anos");
+
+
+            proposta.TipoAssinatura = (input.Ddd, input.UfResidencial) switch
+            {
+                _ when ufs.Contains(input.UfResidencial) => TipoAssinatura.Hibrida,    // Assinatura Híbrida se a UF estiver na lista
+                _ when input.Ddd == input.UfResidencial => TipoAssinatura.Eletronica,  // Assinatura Eletrônica se o DDD for igual à UF de Residência
+                _ => TipoAssinatura.Figital                                               // Assinatura Figital se DDD for diferente da UF de Residência
+            };
 
             //Salvar Proposta
             await propostaRepositorio.Adicionar(proposta, cancellationToken);
