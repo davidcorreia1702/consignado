@@ -10,9 +10,10 @@ namespace Consignado.HttpApi.Dominio.Aplicacao
 
         [Required(ErrorMessage = "O CPF é obrigatório")]
         public string Cpf { get; set; }
-
+        [Required(ErrorMessage = "A Data de nascimento é obrigatório")]
+        public DateTime DataNascimento { get; set; }
         [Required(ErrorMessage = "O DDD é obrigatório")]
-        public string Ddd { get; set; }
+        public string DDD { get; set; }
 
         [Required(ErrorMessage = "O telefone é obrigatório")]
         public string Telefone { get; set; }
@@ -62,7 +63,8 @@ namespace Consignado.HttpApi.Dominio.Aplicacao
         {
             CpfAgente = model.CpfAgente;
             Cpf = model.Cpf;
-            Ddd = model.Ddd;
+            DDD = model.DDD;
+            DataNascimento = model.DataNascimento;
             Telefone = model.Telefone;
             Email = model.Email;
             Cep = model.Cep;

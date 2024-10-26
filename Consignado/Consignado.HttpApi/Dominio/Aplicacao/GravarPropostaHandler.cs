@@ -8,10 +8,10 @@ namespace Consignado.HttpApi.Dominio.Aplicacao
 {
     public class GravarPropostaHandler
     {
-        private readonly PropostaRepositorio _propostaRepositorio;
+        private readonly IPropostaRepositorio _propostaRepositorio;
         List<string> ufs = new List<string> { "SP", "RJ", "MG", "ES", "DF", "BA", "RS", "PR" };
 
-        public GravarPropostaHandler(PropostaRepositorio propostaRepositorio)
+        public GravarPropostaHandler(IPropostaRepositorio propostaRepositorio)
         {
             _propostaRepositorio = propostaRepositorio;
         }
@@ -25,11 +25,7 @@ namespace Consignado.HttpApi.Dominio.Aplicacao
 
             //consultar cpf bloqueados
             //verificar se cpf não está bloqueado
-            var cliente = await _propostaRepositorio.RecuperarCliente(command.Cpf, cancellationToken);
-            if (cliente.HasNoValue)
-                return Result.Failure<Proposta>("Cliente não encontrado");
-
-            if (cliente.Value.Bloqueado)
+            if (await _propostaRepositorio.VerificarCpfBloqueado(command.Cpf))
                 return Result.Failure<Proposta>("Cpf bloqueado");
 
             //consultar os agentes
@@ -45,21 +41,28 @@ namespace Consignado.HttpApi.Dominio.Aplicacao
 
             //Criar Proposta
             var proposta = new Proposta();
-            proposta.Cliente = command.Cpf;
+            proposta.Cpf = command.Cpf;
             proposta.CpfAgente = command.CpfAgente;
-            proposta.DDD = command.Ddd;
+            proposta.DataNascimento = command.DataNascimento;
+            proposta.DDD = command.DDD;
             proposta.Telefone = command.Telefone;
             proposta.Email = command.Email;
-            proposta.Matricula = command.Matricula;
-            proposta.ValorRendimento = command.ValorRendimento;
-            proposta.CodigoConveniada = command.CodigoConveniada;
-            proposta.TipoOperacao = command.TipoOperacao;
-            proposta.Prazo = command.Prazo;
-            proposta.ValorOperacao = command.ValorOperacao;
             proposta.Endereco = command.Endereco;
             proposta.Numero = command.Numero;
             proposta.Cidade = command.Cidade;
-            proposta.UF = command.Uf;
+            proposta.Cep = command.Cep;
+            proposta.Uf = command.Uf;
+            proposta.CodigoConveniada = command.CodigoConveniada;
+            proposta.TipoOperacao = command.TipoOperacao;
+            proposta.Matricula = command.Matricula;
+            proposta.ValorRendimento = command.ValorRendimento;
+            proposta.Prazo = command.Prazo;
+            proposta.ValorOperacao = command.ValorOperacao;
+            proposta.Prestacao = command.Prestacao;
+            proposta.Banco = command.Banco;
+            proposta.Agencia = command.Agencia;
+            proposta.Conta = command.Conta;
+            proposta.TipoConta = command.TipoConta;
 
             if (command.TipoOperacao == TipoOperacao.Refinanciamento && !conveniada.Value.AceitaRefinanciamento)
                 return Result.Failure<Proposta>("Conveniada não aceita Refinanciamento");
@@ -68,21 +71,19 @@ namespace Consignado.HttpApi.Dominio.Aplicacao
             if (!conveniada.Value.Restricoes.IsNullOrEmpty() && conveniada.Value.Restricoes.Any(restricao => restricao.Uf == command.Uf && command.ValorOperacao > restricao.ValorLimite))
                 return Result.Failure<Proposta>("Conveniada com restricao para o valor solicitado");
 
-
-
             //somar a quantidade de parcelas a idade <= 80 anos
             var dataFutura = DateTime.Now.AddMonths(Convert.ToInt32(command.Prazo));
-            var diferencaEmAnos = dataFutura.Year - cliente.Value.DataNascimento.Year;
+            var diferencaEmAnos = dataFutura.Year - command.DataNascimento.Year;
 
-            if (dataFutura < cliente.Value.DataNascimento.AddYears(diferencaEmAnos))
+            if (dataFutura < command.DataNascimento.AddYears(diferencaEmAnos))
                 diferencaEmAnos--;
 
             if (diferencaEmAnos > 80)
                 return Result.Failure<Proposta>("Idade ao realizar a ultima parcela excede de 80 anos");
 
-            var dddCorrespondeUf = DddUfMapping.DddToUf.TryGetValue(command.Ddd, out var ufDoDdd) && ufDoDdd == command.Uf;
+            var dddCorrespondeUf = DddUfMapping.DddToUf.TryGetValue(command.DDD, out var ufDoDdd) && ufDoDdd == command.Uf;
 
-            proposta.TipoAssinatura = (command.Ddd, command.Uf) switch
+            proposta.TipoAssinatura = (command.DDD, command.Uf) switch
             {
                 _ when ufs.Contains(command.Uf) => TipoAssinatura.Hibrida,  // Assinatura Híbrida se a UF estiver na lista
                 _ when dddCorrespondeUf => TipoAssinatura.Eletronica,       // Assinatura Eletrônica se o DDD for igual à UF de Residência

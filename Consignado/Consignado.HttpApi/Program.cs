@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Services.AddScoped<IPropostaRepositorio, PropostaRepositorio>();
 
 builder.Services.AddDbContext<PropostaDbContext>(options =>
 {
