@@ -1,6 +1,5 @@
 using Consignado.HttpApi.Dominio.Aplicacao;
 using Consignado.HttpApi.Dominio.Entidade;
-using Consignado.HttpApi.Dominio.Factories;
 using Consignado.HttpApi.Dominio.Infraestrutura;
 using Moq;
 using static Consignado.Controllers.PropostaController;
@@ -14,7 +13,6 @@ namespace Consignado.TesteUnidade
         {
             //Arrange
             var mockRepositorio = new Mock<IPropostaRepositorio>();
-            var propostaFactory = new PropostaFactory();
 
             mockRepositorio
                 .Setup(n => n.ExistePropostaEmAberto(It.IsAny<string>()))
@@ -43,7 +41,7 @@ namespace Consignado.TesteUnidade
                 .Returns(Task.CompletedTask);
             mockRepositorio.Setup(r => r.Save()).Returns(Task.CompletedTask);
 
-            var handler = new GravarPropostaHandler(mockRepositorio.Object, propostaFactory);
+            var handler = new GravarPropostaHandler(mockRepositorio.Object);
 
             var command = new GravarPropostaCommand(new MovaPropostaModel(
                 CpfAgente: "12345678901",

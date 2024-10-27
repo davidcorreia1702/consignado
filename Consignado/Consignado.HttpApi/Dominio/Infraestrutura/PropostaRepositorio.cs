@@ -19,8 +19,8 @@ namespace Consignado.HttpApi.Dominio.Infraestrutura
         {
             return await dbContext.Database.GetDbConnection()
                                 .QueryFirstOrDefaultAsync<bool>(
-                                    "SELECT CASE WHEN EXISTS (SELECT 1 FROM Consignado.Proposta WHERE cpf = @cpf AND situacao = 'Em Aberto') THEN 1 ELSE 0 END",
-                                    new { cpf }
+                                    "SELECT CASE WHEN EXISTS (SELECT 1 FROM Consignado.Proposta WHERE cpf = @cpf AND situacao = @situacao) THEN 1 ELSE 0 END",
+                                    new { cpf, SituacaoProposta.EmAnalise }
                                 );
         }
 

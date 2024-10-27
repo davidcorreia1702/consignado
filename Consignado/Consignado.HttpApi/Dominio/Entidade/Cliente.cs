@@ -1,6 +1,6 @@
 ﻿namespace Consignado.HttpApi.Dominio.Entidade
 {
-    public class Cliente
+    public record Cliente
     {
         public string Cpf { get; set; }
         public string Nome { get; set; }

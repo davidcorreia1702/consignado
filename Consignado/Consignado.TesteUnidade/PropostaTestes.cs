@@ -1,24 +1,10 @@
 ﻿using Consignado.HttpApi.Dominio.Aplicacao;
 using Consignado.HttpApi.Dominio.Entidade;
-using Consignado.HttpApi.Dominio.Factories;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static Consignado.Controllers.PropostaController;
 
 namespace Consignado.TesteUnidade
 {
-    public class PropostaFactoryTestes
+    public class PropostaTestes
     {
-        private readonly PropostaFactory _propostaFactory;
-
-        public PropostaFactoryTestes()
-        {
-            _propostaFactory = new PropostaFactory();
-        }
-
         [Fact]
         public void Gravar_QuandoSatisfazerTodasAsRegrasEUfDevemTerAssinaturaHibrida_DeveSalvar()
         {
@@ -36,33 +22,30 @@ namespace Consignado.TesteUnidade
                     }
             };
 
-            var command = new GravarPropostaCommand(new MovaPropostaModel(
-                CpfAgente: "12345678901",
-                Cpf: "12345678901",
-                DataNascimento: new DateTime(1980, 1, 1),
-                DDD: "11",
-                Telefone: "999999999",
-                Email: "test@example.com",
-                Cep: "12345-678",
-                Endereco: "Rua Teste",
-                Numero: "123",
-                Cidade: "São Paulo",
-                Uf: "SP",
-                CodigoConveniada: "0020",
-                TipoOperacao: TipoOperacao.Novo,
-                Matricula: "987654321",
-                ValorRendimento: 3000,
-                Prazo: "24",
-                ValorOperacao: 15000,
-                Prestacao: 625,
-                Banco: "001",
-                Agencia: "1234",
-                Conta: "56789-0",
-                TipoConta: "CC"
-            ));
-
             // Act
-            var resultado = _propostaFactory.Gravar(command, conveniada);
+            var resultado = Proposta.Criar(
+                cpfAgente: "12345678901",
+                cpf: "12345678901",
+                dataNascimento: new DateTime(1980, 1, 1),
+                ddd: "11",
+                telefone: "999999999",
+                email: "test@example.com",
+                cep: "12345-678",
+                endereco: "Rua Teste",
+                numero: "123",
+                cidade: "São Paulo",
+                uf: "SP",
+                tipoOperacao: TipoOperacao.Novo,
+                matricula: "987654321",
+                valorRendimento: 3000,
+                prazo: "24",
+                valorOperacao: 15000,
+                prestacao: 625,
+                banco: "001",
+                agencia: "1234",
+                conta: "56789-0",
+                tipoConta: "CC", 
+                conveniada);
 
             // Assert
             Assert.True(resultado.IsSuccess);
@@ -109,33 +92,30 @@ namespace Consignado.TesteUnidade
                     }
             };
 
-            var command = new GravarPropostaCommand(new MovaPropostaModel(
-                CpfAgente: "12345678901",
-                Cpf: "12345678901",
-                DataNascimento: new DateTime(1980, 1, 1),
-                DDD: "21",
-                Telefone: "999999999",
-                Email: "test@example.com",
-                Cep: "12345-678",
-                Endereco: "Rua Teste",
-                Numero: "123",
-                Cidade: "Rio de Janeiro",
-                Uf: "RJ",
-                CodigoConveniada: "0020",
-                TipoOperacao: TipoOperacao.Novo,
-                Matricula: "987654321",
-                ValorRendimento: 3000,
-                Prazo: "24",
-                ValorOperacao: 15000,
-                Prestacao: 625,
-                Banco: "001",
-                Agencia: "1234",
-                Conta: "56789-0",
-                TipoConta: "CC"
-            ));
-
             // Act
-            var resultado = _propostaFactory.Gravar(command, conveniada);
+            var resultado = Proposta.Criar(
+                cpfAgente: "12345678901",
+                cpf: "12345678901",
+                dataNascimento: new DateTime(1980, 1, 1),
+                ddd: "21",
+                telefone: "999999999",
+                email: "test@example.com",
+                cep: "12345-678",
+                endereco: "Rua Teste",
+                numero: "123",
+                cidade: "Rio de Janeiro",
+                uf: "RJ",
+                tipoOperacao: TipoOperacao.Novo,
+                matricula: "987654321",
+                valorRendimento: 3000,
+                prazo: "24",
+                valorOperacao: 15000,
+                prestacao: 625,
+                banco: "001",
+                agencia: "1234",
+                conta: "56789-0",
+                tipoConta: "CC",
+                conveniada);
 
             // Assert
             Assert.True(resultado.IsSuccess);
@@ -182,33 +162,30 @@ namespace Consignado.TesteUnidade
                     }
             };
 
-            var command = new GravarPropostaCommand(new MovaPropostaModel(
-                CpfAgente: "12345678901",
-                Cpf: "12345678901",
-                DataNascimento: new DateTime(1980, 1, 1),
-                DDD: "21",
-                Telefone: "999999999",
-                Email: "test@example.com",
-                Cep: "12345-678",
-                Endereco: "Rua Teste",
-                Numero: "123",
-                Cidade: "São Paulo",
-                Uf: "PE",
-                CodigoConveniada: "0020",
-                TipoOperacao: TipoOperacao.Novo,
-                Matricula: "987654321",
-                ValorRendimento: 3000,
-                Prazo: "24",
-                ValorOperacao: 15000,
-                Prestacao: 625,
-                Banco: "001",
-                Agencia: "1234",
-                Conta: "56789-0",
-                TipoConta: "CC"
-            ));
-
             // Act
-            var resultado = _propostaFactory.Gravar(command, conveniada);
+            var resultado = Proposta.Criar(
+                cpfAgente: "12345678901",
+                cpf: "12345678901",
+                dataNascimento: new DateTime(1980, 1, 1),
+                ddd: "21",
+                telefone: "999999999",
+                email: "test@example.com",
+                cep: "12345-678",
+                endereco: "Rua Teste",
+                numero: "123",
+                cidade: "Recife",
+                uf: "PE",
+                tipoOperacao: TipoOperacao.Novo,
+                matricula: "987654321",
+                valorRendimento: 3000,
+                prazo: "24",
+                valorOperacao: 15000,
+                prestacao: 625,
+                banco: "001",
+                agencia: "1234",
+                conta: "56789-0",
+                tipoConta: "CC",
+                conveniada);
 
             // Assert
             Assert.True(resultado.IsSuccess);
@@ -222,7 +199,7 @@ namespace Consignado.TesteUnidade
             Assert.Equal("12345-678", proposta.Cep);
             Assert.Equal("Rua Teste", proposta.Endereco);
             Assert.Equal("123", proposta.Numero);
-            Assert.Equal("São Paulo", proposta.Cidade);
+            Assert.Equal("Recife", proposta.Cidade);
             Assert.Equal("PE", proposta.Uf);
             Assert.Equal("0020", proposta.CodigoConveniada);
             Assert.Equal(TipoOperacao.Novo, proposta.TipoOperacao);
@@ -255,33 +232,30 @@ namespace Consignado.TesteUnidade
                     }
             };
 
-            var command = new GravarPropostaCommand(new MovaPropostaModel(
-                CpfAgente: "12345678901",
-                Cpf: "12345678901",
-                DataNascimento: new DateTime(1980, 1, 1),
-                DDD: "11",
-                Telefone: "999999999",
-                Email: "test@example.com",
-                Cep: "12345-678",
-                Endereco: "Rua Teste",
-                Numero: "123",
-                Cidade: "São Paulo",
-                Uf: "SP",
-                CodigoConveniada: "0020",
-                TipoOperacao: TipoOperacao.Refinanciamento,
-                Matricula: "987654321",
-                ValorRendimento: 3000,
-                Prazo: "24",
-                ValorOperacao: 15000,
-                Prestacao: 625,
-                Banco: "001",
-                Agencia: "1234",
-                Conta: "56789-0",
-                TipoConta: "CC"
-            ));
-
-            // Act
-            var resultado = _propostaFactory.Gravar(command, conveniada);
+            //Act
+            var resultado = Proposta.Criar(
+                cpfAgente: "12345678901",
+                cpf: "12345678901",
+                dataNascimento: new DateTime(1980, 1, 1),
+                ddd: "11",
+                telefone: "999999999",
+                email: "test@example.com",
+                cep: "12345-678",
+                endereco: "Rua Teste",
+                numero: "123",
+                cidade: "São Paulo",
+                uf: "SP",
+                tipoOperacao: TipoOperacao.Refinanciamento,
+                matricula: "987654321",
+                valorRendimento: 3000,
+                prazo: "24",
+                valorOperacao: 15000,
+                prestacao: 625,
+                banco: "001",
+                agencia: "1234",
+                conta: "56789-0",
+                tipoConta: "CC",
+                conveniada);
 
             // Assert
             Assert.True(resultado.IsFailure);
@@ -305,33 +279,30 @@ namespace Consignado.TesteUnidade
                     }
             };
 
-            var command = new GravarPropostaCommand(new MovaPropostaModel(
-                CpfAgente: "12345678901",
-                Cpf: "12345678901",
-                DataNascimento: new DateTime(1980, 1, 1),
-                DDD: "11",
-                Telefone: "999999999",
-                Email: "test@example.com",
-                Cep: "12345-678",
-                Endereco: "Rua Teste",
-                Numero: "123",
-                Cidade: "São Paulo",
-                Uf: "SP",
-                CodigoConveniada: "0020",
-                TipoOperacao: TipoOperacao.Novo,
-                Matricula: "987654321",
-                ValorRendimento: 3000,
-                Prazo: "24",
-                ValorOperacao: 15000,
-                Prestacao: 625,
-                Banco: "001",
-                Agencia: "1234",
-                Conta: "56789-0",
-                TipoConta: "CC"
-            ));
-
-            // Act
-            var resultado = _propostaFactory.Gravar(command, conveniada);
+            //Act
+            var resultado = Proposta.Criar(
+                cpfAgente: "12345678901",
+                cpf: "12345678901",
+                dataNascimento: new DateTime(1980, 1, 1),
+                ddd: "11",
+                telefone: "999999999",
+                email: "test@example.com",
+                cep: "12345-678",
+                endereco: "Rua Teste",
+                numero: "123",
+                cidade: "São Paulo",
+                uf: "SP",
+                tipoOperacao: TipoOperacao.Novo,
+                matricula: "987654321",
+                valorRendimento: 3000,
+                prazo: "24",
+                valorOperacao: 15000,
+                prestacao: 625,
+                banco: "001",
+                agencia: "1234",
+                conta: "56789-0",
+                tipoConta: "CC",
+                conveniada);
 
             // Assert
             Assert.True(resultado.IsFailure);
@@ -355,33 +326,30 @@ namespace Consignado.TesteUnidade
                     }
             };
 
-            var command = new GravarPropostaCommand(new MovaPropostaModel(
-                CpfAgente: "12345678901",
-                Cpf: "12345678901",
-                DataNascimento: new DateTime(1945, 1, 1),
-                DDD: "11",
-                Telefone: "999999999",
-                Email: "test@example.com",
-                Cep: "12345-678",
-                Endereco: "Rua Teste",
-                Numero: "123",
-                Cidade: "São Paulo",
-                Uf: "SP",
-                CodigoConveniada: "0020",
-                TipoOperacao: TipoOperacao.Novo,
-                Matricula: "987654321",
-                ValorRendimento: 3000,
-                Prazo: "24",
-                ValorOperacao: 15000,
-                Prestacao: 625,
-                Banco: "001",
-                Agencia: "1234",
-                Conta: "56789-0",
-                TipoConta: "CC"
-            ));
-
             // Act
-            var resultado = _propostaFactory.Gravar(command, conveniada);
+            var resultado = Proposta.Criar(
+                cpfAgente: "12345678901",
+                cpf: "12345678901",
+                dataNascimento: new DateTime(1945, 1, 1),
+                ddd: "11",
+                telefone: "999999999",
+                email: "test@example.com",
+                cep: "12345-678",
+                endereco: "Rua Teste",
+                numero: "123",
+                cidade: "São Paulo",
+                uf: "SP",
+                tipoOperacao: TipoOperacao.Novo,
+                matricula: "987654321",
+                valorRendimento: 3000,
+                prazo: "24",
+                valorOperacao: 15000,
+                prestacao: 625,
+                banco: "001",
+                agencia: "1234",
+                conta: "56789-0",
+                tipoConta: "CC",
+                conveniada);
 
             // Assert
             Assert.True(resultado.IsFailure);

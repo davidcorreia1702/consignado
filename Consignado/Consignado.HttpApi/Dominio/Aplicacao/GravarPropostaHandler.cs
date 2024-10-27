@@ -1,23 +1,17 @@
-﻿using Consignado.HttpApi.Comum;
-using Consignado.HttpApi.Dominio.Entidade;
-using Consignado.HttpApi.Dominio.Factories;
+﻿using Consignado.HttpApi.Dominio.Entidade;
 using Consignado.HttpApi.Dominio.Infraestrutura;
 using CSharpFunctionalExtensions;
-using Microsoft.IdentityModel.Tokens;
 
 namespace Consignado.HttpApi.Dominio.Aplicacao
 {
     public class GravarPropostaHandler
     {
         private readonly IPropostaRepositorio _propostaRepositorio;
-        private readonly PropostaFactory _propostaFactory;
 
         public GravarPropostaHandler(
-            IPropostaRepositorio propostaRepositorio,
-            PropostaFactory propostaFactory)
+            IPropostaRepositorio propostaRepositorio)
         {
             _propostaRepositorio = propostaRepositorio;
-            _propostaFactory = propostaFactory;
         }
 
         public async Task<Result<Proposta>> Handle(GravarPropostaCommand command, CancellationToken cancellationToken)
@@ -43,7 +37,30 @@ namespace Consignado.HttpApi.Dominio.Aplicacao
             if (conveniada.HasNoValue)
                 return Result.Failure<Proposta>("Conveniada inválida");
 
-            var propostaResult = _propostaFactory.Gravar(command, conveniada.Value);
+            var propostaResult = Proposta.Criar(
+                cpfAgente: command.CpfAgente,
+                cpf: command.Cpf,
+                dataNascimento: command.DataNascimento,
+                ddd: command.DDD,
+                telefone: command.Telefone,
+                email: command.Email,
+                cep: command.Cep,
+                endereco: command.Endereco,
+                numero: command.Numero,
+                cidade: command.Cidade,
+                uf: command.Uf,
+                tipoOperacao: command.TipoOperacao,
+                matricula: command.Matricula,
+                valorRendimento: command.ValorRendimento,
+                prazo: command.Prazo,
+                valorOperacao: command.ValorOperacao,
+                prestacao: command.Prestacao,
+                banco: command.Banco,
+                agencia: command.Agencia,
+                conta: command.Conta,
+                tipoConta: command.TipoConta,
+                conveniada.Value);
+
             if(propostaResult.IsFailure)
                 return Result.Failure<Proposta>(propostaResult.Error);
 

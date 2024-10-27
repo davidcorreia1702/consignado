@@ -1,12 +1,7 @@
 ﻿namespace Consignado.HttpApi.Dominio.Entidade
 {
-    public class Conveniada
+    public record Conveniada
     {
-        public Conveniada()
-        {
-            
-        }
-
         public int Id { get; set; }
         public string Nome { get; set; }
         public string Codigo { get; set; }
