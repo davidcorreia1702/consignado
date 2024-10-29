@@ -1,5 +1,5 @@
 ﻿using Consignado.HttpApi.Dominio.Propostas.Infraestrutura;
-using Consignado.HttpApi.Dominio.Regras.Infra.Mapeamento;
+using Consignado.HttpApi.Dominio.Strategies.Infra.Mapeamento;
 using CSharpFunctionalExtensions;
 
 namespace Consignado.HttpApi.Dominio.Propostas.Aplicacao
@@ -19,6 +19,11 @@ namespace Consignado.HttpApi.Dominio.Propostas.Aplicacao
 
         public async Task<Result<Proposta>> Handle(GravarPropostaCommand command, CancellationToken cancellationToken)
         {
+            var _validador = new GravarPropostaValidador();
+            var resultadoValidacao = _validador.Validar(command);
+            if (resultadoValidacao.IsFailure)
+                return Result.Failure<Proposta>(resultadoValidacao.Error);
+
             //consultar as propostas por cpf
             //verificar se exite proposta com situacao em aberto
             if (await _propostaRepositorio.ExistePropostaEmAberto(command.Cpf))
@@ -40,6 +45,16 @@ namespace Consignado.HttpApi.Dominio.Propostas.Aplicacao
             if (conveniada.HasNoValue)
                 return Result.Failure<Proposta>("Conveniada inválida");
 
+            //consultas as uf
+            var ufDdd = await _propostaRepositorio.RecuperarUFPorDDD(command.DDD, cancellationToken);
+            if (ufDdd.HasNoValue)
+                return Result.Failure<Proposta>("DDD não possui uf assossiada");
+
+            //consultas as uf
+            var unidadeFederativa = await _propostaRepositorio.RecuperarUFPorDDD(command.DDD, cancellationToken);
+            if (unidadeFederativa.HasNoValue)
+                return Result.Failure<Proposta>("UF inválida");
+
             var regras = await _regraPorConveniadaRepositorio.ObterRegrasPorConveniadaAsync(conveniada.Value.Id);
 
             var propostaResult = Proposta.Criar(
@@ -53,7 +68,7 @@ namespace Consignado.HttpApi.Dominio.Propostas.Aplicacao
                 endereco: command.Endereco,
                 numero: command.Numero,
                 cidade: command.Cidade,
-                uf: command.Uf,
+                uf: unidadeFederativa.Value,
                 tipoOperacao: command.TipoOperacao,
                 matricula: command.Matricula,
                 valorRendimento: command.ValorRendimento,
@@ -65,6 +80,7 @@ namespace Consignado.HttpApi.Dominio.Propostas.Aplicacao
                 conta: command.Conta,
                 tipoConta: command.TipoConta,
                 conveniada.Value,
+                ufDdd: ufDdd.Value.Sigla,
                 regras.Select(n => n.Regra));
 
             if (propostaResult.IsFailure)

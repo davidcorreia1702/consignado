@@ -1,6 +1,6 @@
-﻿using Consignado.HttpApi.Dominio.Regras.RegrasPorConveniada;
+﻿using Consignado.HttpApi.Dominio.Strategies.RegrasPorConveniada;
 
-namespace Consignado.HttpApi.Dominio.Regras.Infra.Mapeamento
+namespace Consignado.HttpApi.Dominio.Strategies.Infra.Mapeamento
 {
     public interface IRegraPorConveniadaRepositorio
     {

@@ -10,6 +10,8 @@ namespace Consignado.HttpApi.Dominio.Propostas.Infraestrutura
         Task<Maybe<Conveniada>> RecuperarConveniada(string codigo, CancellationToken cancellationToken);
         Task<Maybe<Cliente>> RecuperarCliente(string cpf, CancellationToken cancellationToken);
         Task Adicionar(Proposta proposta, CancellationToken cancellationToken);
+        Task<Maybe<UnidadeFederativa>> RecuperarUFPorDDD(string sigla, CancellationToken cancellationToken);
+        Task<Maybe<UnidadeFederativa>> RecuperarUF(string sigla, CancellationToken cancellationToken);
         Task Save();
     }
 }

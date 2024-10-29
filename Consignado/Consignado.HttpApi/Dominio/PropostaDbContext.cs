@@ -1,7 +1,7 @@
 ﻿using Consignado.HttpApi.Dominio.Propostas;
 using Consignado.HttpApi.Dominio.Propostas.Infraestrutura.Mapeamento;
-using Consignado.HttpApi.Dominio.Regras.Infra.Mapeamento;
-using Consignado.HttpApi.Dominio.Regras.RegrasPorConveniada;
+using Consignado.HttpApi.Dominio.Strategies.Infra.Mapeamento;
+using Consignado.HttpApi.Dominio.Strategies.RegrasPorConveniada;
 using Microsoft.EntityFrameworkCore;
 
 namespace Consignado.HttpApi.Dominio

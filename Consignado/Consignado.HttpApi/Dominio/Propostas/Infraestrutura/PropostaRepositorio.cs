@@ -49,6 +49,20 @@ namespace Consignado.HttpApi.Dominio.Propostas.Infraestrutura
             return conveniada ?? Maybe<Conveniada>.None;
         }
 
+        public async Task<Maybe<UnidadeFederativa>> RecuperarUFPorDDD(string ddd, CancellationToken cancellationToken)
+        {
+            var unidadeFederativa = await dbContext.UnidadesFederativa
+                                                .FirstOrDefaultAsync(c => c.Ddds.Any(d => d.Numero == ddd), cancellationToken);
+            return unidadeFederativa ?? Maybe<UnidadeFederativa>.None;
+        }
+
+        public async Task<Maybe<UnidadeFederativa>> RecuperarUF(string sigla, CancellationToken cancellationToken)
+        {
+            var unidadeFederativa = await dbContext.UnidadesFederativa
+                                                .FirstOrDefaultAsync(c => c.Sigla == sigla, cancellationToken);
+            return unidadeFederativa ?? Maybe<UnidadeFederativa>.None;
+        }
+
         public async Task<Maybe<Cliente>> RecuperarCliente(string cpf, CancellationToken cancellationToken)
         {
             var cliente = await dbContext.Clientes.FirstOrDefaultAsync(c => c.Cpf == cpf, cancellationToken);

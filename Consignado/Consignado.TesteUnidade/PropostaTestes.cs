@@ -1,5 +1,5 @@
 ﻿using Consignado.HttpApi.Dominio.Propostas;
-using Consignado.HttpApi.Dominio.Regras.RegrasPorConveniada;
+using Consignado.HttpApi.Dominio.Strategies.RegrasPorConveniada;
 
 namespace Consignado.TesteUnidade
 {
@@ -13,6 +13,9 @@ namespace Consignado.TesteUnidade
             conveniada.AdicionarRestricao(new ConveniadaUfRestricao("SP", 100000));
             conveniada.AdicionarRestricao(new ConveniadaUfRestricao("RS", 500000));
 
+            var unidadeFederativa = new UnidadeFederativa("SP", assinaturaHibrida: true);
+            unidadeFederativa.AdicionarDdd(new DDD("11"));
+
             // Act
             var resultado = Proposta.Criar(
                 cpfAgente: "12345678901",
@@ -25,7 +28,7 @@ namespace Consignado.TesteUnidade
                 endereco: "Rua Teste",
                 numero: "123",
                 cidade: "São Paulo",
-                uf: "SP",
+                uf: unidadeFederativa,
                 tipoOperacao: TipoOperacao.Novo,
                 matricula: "987654321",
                 valorRendimento: 3000,
@@ -37,6 +40,7 @@ namespace Consignado.TesteUnidade
                 conta: "56789-0",
                 tipoConta: Tipoconta.ContaCorrente, 
                 conveniada,
+                ufDdd: unidadeFederativa.Sigla,
                 obterRegrasBasicas());
 
             // Assert
@@ -73,7 +77,9 @@ namespace Consignado.TesteUnidade
             // Arrange
             var conveniada = new Conveniada(1, "INSS", "0020", aceitaRefinanciamento: true);
             conveniada.AdicionarRestricao(new ConveniadaUfRestricao("SP", 100000));
-            conveniada.AdicionarRestricao(new ConveniadaUfRestricao("RS", 500000));
+
+            var unidadeFederativa = new UnidadeFederativa("RJ", assinaturaHibrida: false);
+            unidadeFederativa.AdicionarDdd(new DDD("21"));
 
             // Act
             var resultado = Proposta.Criar(
@@ -87,7 +93,7 @@ namespace Consignado.TesteUnidade
                 endereco: "Rua Teste",
                 numero: "123",
                 cidade: "Rio de Janeiro",
-                uf: "RJ",
+                uf: unidadeFederativa,
                 tipoOperacao: TipoOperacao.Novo,
                 matricula: "987654321",
                 valorRendimento: 3000,
@@ -99,6 +105,7 @@ namespace Consignado.TesteUnidade
                 conta: "56789-0",
                 tipoConta: Tipoconta.ContaCorrente,
                 conveniada,
+                ufDdd: unidadeFederativa.Sigla,
                 obterRegrasBasicas());
 
             // Assert
@@ -135,8 +142,11 @@ namespace Consignado.TesteUnidade
             // Arrange
             var conveniada = new Conveniada(1, "INSS", "0020", aceitaRefinanciamento: true);
             conveniada.AdicionarRestricao(new ConveniadaUfRestricao("SP", 100000));
-            conveniada.AdicionarRestricao(new ConveniadaUfRestricao("RS", 500000));
 
+            var unidadeFederativa = new UnidadeFederativa("RJ", assinaturaHibrida: false);
+            unidadeFederativa.AdicionarDdd(new DDD("21"));
+
+            var unidadeFederativaNascimento = new UnidadeFederativa("PE", assinaturaHibrida: false);
 
             // Act
             var resultado = Proposta.Criar(
@@ -150,7 +160,7 @@ namespace Consignado.TesteUnidade
                 endereco: "Rua Teste",
                 numero: "123",
                 cidade: "Recife",
-                uf: "PE",
+                uf: unidadeFederativaNascimento,
                 tipoOperacao: TipoOperacao.Novo,
                 matricula: "987654321",
                 valorRendimento: 3000,
@@ -162,6 +172,7 @@ namespace Consignado.TesteUnidade
                 conta: "56789-0",
                 tipoConta: Tipoconta.ContaCorrente,
                 conveniada,
+                ufDdd: unidadeFederativa.Sigla,
                 obterRegrasBasicas());
 
             // Assert
@@ -198,7 +209,9 @@ namespace Consignado.TesteUnidade
             // Arrange
             var conveniada = new Conveniada(1, "INSS", "0020", aceitaRefinanciamento: false);
             conveniada.AdicionarRestricao(new ConveniadaUfRestricao("SP", 100000));
-            conveniada.AdicionarRestricao(new ConveniadaUfRestricao("RS", 500000));
+
+            var unidadeFederativa = new UnidadeFederativa("SP", assinaturaHibrida: true);
+            unidadeFederativa.AdicionarDdd(new DDD("11"));
 
             //Act
             var resultado = Proposta.Criar(
@@ -212,7 +225,7 @@ namespace Consignado.TesteUnidade
                 endereco: "Rua Teste",
                 numero: "123",
                 cidade: "São Paulo",
-                uf: "SP",
+                uf: unidadeFederativa,
                 tipoOperacao: TipoOperacao.Refinanciamento,
                 matricula: "987654321",
                 valorRendimento: 3000,
@@ -224,6 +237,7 @@ namespace Consignado.TesteUnidade
                 conta: "56789-0",
                 tipoConta: Tipoconta.ContaCorrente,
                 conveniada,
+                ufDdd: unidadeFederativa.Sigla,
                 obterRegrasBasicas());
 
             // Assert
@@ -237,7 +251,9 @@ namespace Consignado.TesteUnidade
             // Arrange
             var conveniada = new Conveniada(1, "INSS", "0020", aceitaRefinanciamento: true);
             conveniada.AdicionarRestricao(new ConveniadaUfRestricao("SP", 10000));
-            conveniada.AdicionarRestricao(new ConveniadaUfRestricao("RS", 500000));
+
+            var unidadeFederativa = new UnidadeFederativa("SP", assinaturaHibrida: true);
+            unidadeFederativa.AdicionarDdd(new DDD("11"));
 
             //Act
             var resultado = Proposta.Criar(
@@ -251,7 +267,7 @@ namespace Consignado.TesteUnidade
                 endereco: "Rua Teste",
                 numero: "123",
                 cidade: "São Paulo",
-                uf: "SP",
+                uf: unidadeFederativa,
                 tipoOperacao: TipoOperacao.Novo,
                 matricula: "987654321",
                 valorRendimento: 3000,
@@ -263,6 +279,7 @@ namespace Consignado.TesteUnidade
                 conta: "56789-0",
                 tipoConta: Tipoconta.ContaCorrente,
                 conveniada,
+                ufDdd: unidadeFederativa.Sigla,
                 obterRegrasBasicas());
 
             // Assert
@@ -276,7 +293,9 @@ namespace Consignado.TesteUnidade
             // Arrange
             var conveniada = new Conveniada(1, "INSS", "0020", aceitaRefinanciamento: true);
             conveniada.AdicionarRestricao(new ConveniadaUfRestricao("SP", 100000));
-            conveniada.AdicionarRestricao(new ConveniadaUfRestricao("RS", 500000));
+
+            var unidadeFederativa = new UnidadeFederativa("SP", assinaturaHibrida: true);
+            unidadeFederativa.AdicionarDdd(new DDD("11"));
 
             // Act
             var resultado = Proposta.Criar(
@@ -290,7 +309,7 @@ namespace Consignado.TesteUnidade
                 endereco: "Rua Teste",
                 numero: "123",
                 cidade: "São Paulo",
-                uf: "SP",
+                uf: unidadeFederativa,
                 tipoOperacao: TipoOperacao.Novo,
                 matricula: "987654321",
                 valorRendimento: 3000,
@@ -302,6 +321,7 @@ namespace Consignado.TesteUnidade
                 conta: "56789-0",
                 tipoConta: Tipoconta.ContaCorrente,
                 conveniada,
+                ufDdd: unidadeFederativa.Sigla,
                 obterRegrasBasicas());
 
             // Assert
@@ -317,6 +337,14 @@ namespace Consignado.TesteUnidade
                 new ValidacaoPermiteRefinanciamento(),
                 new ValidacaoIdadeMaximaUltimaParcela(),
             };
+        }
+
+        private void CriarDadosUnidadeFederativa()
+        {
+            var unidadeFederativa = new UnidadeFederativa("SP", assinaturaHibrida: true);
+            unidadeFederativa.AdicionarDdd(new DDD("11"));
+
+            
         }
     }
 }

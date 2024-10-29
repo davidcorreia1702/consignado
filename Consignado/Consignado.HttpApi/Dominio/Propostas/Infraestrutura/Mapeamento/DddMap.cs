@@ -8,7 +8,13 @@ namespace Consignado.HttpApi.Dominio.Propostas.Infraestrutura.Mapeamento
     {
         public void Configure(EntityTypeBuilder<DDD> builder)
         {
-            throw new NotImplementedException();
+            builder.ToTable("Ddd");
+
+            builder.HasKey(c => c.Id);
+
+            builder.Property(c => c.Numero)
+            .IsRequired()
+            .HasColumnType("varchar(3)");
         }
     }
 }

@@ -1,6 +1,6 @@
 ﻿using CSharpFunctionalExtensions;
 
-namespace Consignado.HttpApi.Dominio.Regras.RegrasPorConveniada
+namespace Consignado.HttpApi.Dominio.Strategies.RegrasPorConveniada
 {
     public interface IValidarProposta
     {

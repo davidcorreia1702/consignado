@@ -1,7 +1,7 @@
 ﻿using CSharpFunctionalExtensions;
 using Microsoft.IdentityModel.Tokens;
 
-namespace Consignado.HttpApi.Dominio.Regras.RegrasPorConveniada
+namespace Consignado.HttpApi.Dominio.Strategies.RegrasPorConveniada
 {
     public class ValidacaoRestricaoValor : IValidarProposta
     {

@@ -1,7 +1,7 @@
 ﻿using Consignado.HttpApi.Comum;
-using Consignado.HttpApi.Dominio.Regras.RegrasPorConveniada;
+using Consignado.HttpApi.Dominio.Strategies.RegrasPorConveniada;
+using Consignado.HttpApi.Dominio.Strategies.RegraTipoAssinatura;
 using CSharpFunctionalExtensions;
-using Microsoft.IdentityModel.Tokens;
 
 namespace Consignado.HttpApi.Dominio.Propostas
 {
@@ -99,7 +99,7 @@ namespace Consignado.HttpApi.Dominio.Propostas
             string endereco,
             string numero,
             string cidade,
-            string uf,
+            UnidadeFederativa uf,
             TipoOperacao tipoOperacao,
             string matricula,
             decimal valorRendimento,
@@ -111,16 +111,21 @@ namespace Consignado.HttpApi.Dominio.Propostas
             string conta,
             Tipoconta tipoConta,
             Conveniada conveniada,
+            string ufDdd,
             IEnumerable<IValidarProposta> regras)
         {
 
             foreach (var regra in regras)
             {
-                ValidacaoProposta validacaoProposta = new ValidacaoProposta { Conveniada = conveniada, TipoOperacao = tipoOperacao, Uf = uf, ValorOperacao = valorOperacao, Prazo = Convert.ToInt32(prazo), DataNascimento = dataNascimento };  
+                ValidacaoProposta validacaoProposta = new ValidacaoProposta { Conveniada = conveniada, TipoOperacao = tipoOperacao, Uf = uf.Sigla, ValorOperacao = valorOperacao, Prazo = Convert.ToInt32(prazo), DataNascimento = dataNascimento };  
                 var resultado = regra.Validar(validacaoProposta);
                 if (resultado.IsFailure)
                     return Result.Failure<Proposta>(resultado.Error);
             }
+
+            var tipoAssinatura = ObterTipoAssinatura(ufDdd, uf);
+            if (tipoAssinatura.IsFailure)
+                return Result.Failure<Proposta>(tipoAssinatura.Error);
 
             var proposta = new Proposta(
                 Guid.NewGuid(),
@@ -134,7 +139,7 @@ namespace Consignado.HttpApi.Dominio.Propostas
                 endereco,
                 numero,
                 cidade,
-                uf,
+                uf.Sigla,
                 conveniada.Id,
                 tipoOperacao,
                 matricula,
@@ -146,23 +151,30 @@ namespace Consignado.HttpApi.Dominio.Propostas
                 agencia,
                 conta,
                 tipoConta,
-                tipoAssinatura: ObterTipoAssinatura(ddd, uf),
+                tipoAssinatura: tipoAssinatura.Value,
                 SituacaoProposta.EmAnalise
             );
 
             return Result.Success(proposta);
         }
 
-        public static TipoAssinatura ObterTipoAssinatura(string ddd, string uf)
+        private static Result<TipoAssinatura> ObterTipoAssinatura(string ufDdd, UnidadeFederativa uf)
         {
-            var dddCorrespondeUf = DddUfMapping.DddToUf.TryGetValue(ddd, out var ufDoDdd) && ufDoDdd == uf;
-
-            return (ddd, uf) switch
+            var validacoes = new List<ITipoAssinaturaStrategy>
             {
-                _ when UfComAssinaturaHibrida.Ufs.Contains(uf) => TipoAssinatura.Hibrida,  // Assinatura Híbrida se a UF estiver na lista
-                _ when dddCorrespondeUf => TipoAssinatura.Eletronica,                      // Assinatura Eletrônica se o DDD for igual à UF de Residência
-                _ => TipoAssinatura.Figital                                                 // Assinatura Figital se DDD for diferente da UF de Residência
+                new AssinaturaHibridaStrategy(),
+                new AssinaturaEletronicaStrategy(),
+                new AssinaturaFigitalStrategy()
             };
+
+            foreach (var validacao in validacoes)
+            {
+                var resultado = validacao.Validar(new ValidacaoTipoAssinatura { UfDdd = ufDdd, UfNascimento = uf.Sigla, AssinaturaHibirda = uf.AssinaturaHibirda});
+                if (resultado)
+                    return Result.Success(validacao.ObterTipoAssinatura());
+            }
+
+            return Result.Failure<TipoAssinatura>("Tipo assinatura inválida");
         }
     }
 

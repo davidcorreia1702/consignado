@@ -1,7 +1,7 @@
 using Consignado.HttpApi.Dominio.Propostas;
 using Consignado.HttpApi.Dominio.Propostas.Aplicacao;
 using Consignado.HttpApi.Dominio.Propostas.Infraestrutura;
-using Consignado.HttpApi.Dominio.Regras.Infra.Mapeamento;
+using Consignado.HttpApi.Dominio.Strategies.Infra.Mapeamento;
 using Moq;
 using static Consignado.Controllers.PropostaController;
 
@@ -26,7 +26,7 @@ namespace Consignado.TesteUnidade
 
             var conveniada = new Conveniada(1, "INSS", "0020", aceitaRefinanciamento: true);
             conveniada.AdicionarRestricao(new ConveniadaUfRestricao("SP", 100000));
-            conveniada.AdicionarRestricao(new ConveniadaUfRestricao("RS", 500000 ));
+
             mockPropostaRepositorio.Setup(n => n.RecuperarConveniada(It.IsAny<string>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(conveniada);
 
@@ -35,32 +35,39 @@ namespace Consignado.TesteUnidade
                 .Returns(Task.CompletedTask);
             mockPropostaRepositorio.Setup(r => r.Save()).Returns(Task.CompletedTask);
 
+
+            var unidadeFederativa = new UnidadeFederativa("SP", assinaturaHibrida: true);
+            unidadeFederativa.AdicionarDdd(new DDD("11"));
+
+            mockPropostaRepositorio.Setup(n => n.RecuperarUFPorDDD(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(unidadeFederativa);
+
             var handler = new GravarPropostaHandler(mockPropostaRepositorio.Object, mockRegraPorConveniadaRepositorio.Object);
 
-            var command = new GravarPropostaCommand(new NovaPropostaModel(
-                CpfAgente: "12345678901",
-                Cpf: "12345678901",
-                DataNascimento: new DateTime(1980, 1, 1),
-                DDD: "11",
-                Telefone: "999999999",
-                Email: "test@example.com",
-                Cep: "12345-678",
-                Endereco: "Rua Teste",
-                Numero: "123",
-                Cidade: "São Paulo",
-                Uf: "SP",
-                CodigoConveniada: "0020",
-                TipoOperacao: TipoOperacao.Novo,
-                Matricula: "987654321",
-                ValorRendimento: 3000,
-                Prazo: "24",
-                ValorOperacao: 15000,
-                Prestacao: 625,
-                Banco: "001",
-                Agencia: "1234",
-                Conta: "56789-0",
-                TipoConta: Tipoconta.ContaCorrente
-            ));
+            var command = new GravarPropostaCommand(
+                cpfAgente: "12345678901",
+                cpf: "12345678901",
+                dataNascimento: new DateTime(1980, 1, 1),
+                ddd: "11",
+                telefone: "999999999",
+                email: "test@example.com",
+                cep: "12345-678",
+                endereco: "Rua Teste",
+                numero: "123",
+                cidade: "São Paulo",
+                uf: "SP",
+                codigoConveniada: "0020",
+                tipoOperacao: TipoOperacao.Novo,
+                matricula: "987654321",
+                valorRendimento: 3000,
+                prazo: "24",
+                valorOperacao: 15000,
+                prestacao: 625,
+                banco: "001",
+                agencia: "1234",
+                conta: "56789-0",
+                tipoConta: Tipoconta.ContaCorrente
+            );
 
             //Act
             var resultado = await handler.Handle(command, CancellationToken.None);

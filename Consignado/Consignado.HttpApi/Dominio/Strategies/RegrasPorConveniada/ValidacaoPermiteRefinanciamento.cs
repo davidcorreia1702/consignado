@@ -1,7 +1,7 @@
 ﻿using Consignado.HttpApi.Dominio.Propostas;
 using CSharpFunctionalExtensions;
 
-namespace Consignado.HttpApi.Dominio.Regras.RegrasPorConveniada
+namespace Consignado.HttpApi.Dominio.Strategies.RegrasPorConveniada
 {
     public class ValidacaoPermiteRefinanciamento : IValidarProposta
     {
