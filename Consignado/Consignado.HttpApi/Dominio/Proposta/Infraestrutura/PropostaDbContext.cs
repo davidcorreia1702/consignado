@@ -1,13 +1,12 @@
-﻿using Consignado.HttpApi.Dominio.Entidade;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 
-namespace Consignado.HttpApi.Dominio.Infraestrutura
+namespace Consignado.HttpApi.Dominio.Inscricao.Infraestrutura
 {
     public class PropostaDbContext : DbContext
     {
         public PropostaDbContext(DbContextOptions<PropostaDbContext> options) : base(options)
         {
-            
+
         }
 
         public DbSet<Proposta> Propostas { get; set; }

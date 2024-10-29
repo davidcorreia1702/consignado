@@ -1,6 +1,6 @@
-using Consignado.HttpApi.Dominio.Aplicacao;
-using Consignado.HttpApi.Dominio.Entidade;
-using Consignado.HttpApi.Dominio.Infraestrutura;
+using Consignado.HttpApi.Dominio.Inscricao;
+using Consignado.HttpApi.Dominio.Inscricao.Aplicacao;
+using Consignado.HttpApi.Dominio.Inscricao.Infraestrutura;
 using Moq;
 using static Consignado.Controllers.PropostaController;
 
@@ -22,19 +22,11 @@ namespace Consignado.TesteUnidade
             mockRepositorio.Setup(n => n.VerificarAgenteInativo(It.IsAny<string>()))
                 .ReturnsAsync(false);
 
+            var conveniada = new Conveniada(1, "INSS", "0020", aceitaRefinanciamento: true);
+            conveniada.AdicionarRestricao(new ConveniadaUfRestricao("SP", 100000));
+            conveniada.AdicionarRestricao(new ConveniadaUfRestricao("RS", 500000 ));
             mockRepositorio.Setup(n => n.RecuperarConveniada(It.IsAny<string>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new Conveniada
-                {
-                    Codigo = "0020",
-                    Id = 1,
-                    Nome = "INSS",
-                    AceitaRefinanciamento = true,
-                    Restricoes = new List<ConveniadaRestricao>
-                    {
-                            new ConveniadaRestricao {Uf = "SP",ValorLimite = 100000},
-                            new ConveniadaRestricao {Uf = "RS",ValorLimite = 500000}
-                    }
-                });
+                .ReturnsAsync(conveniada);
 
             mockRepositorio
                 .Setup(r => r.Adicionar(It.IsAny<Proposta>(), It.IsAny<CancellationToken>()))
@@ -65,7 +57,7 @@ namespace Consignado.TesteUnidade
                 Banco: "001",
                 Agencia: "1234",
                 Conta: "56789-0",
-                TipoConta: "CC"
+                TipoConta: Tipoconta.ContaCorrente
             ));
 
             //Act
@@ -87,7 +79,7 @@ namespace Consignado.TesteUnidade
             Assert.Equal("123", proposta.Numero);
             Assert.Equal("São Paulo", proposta.Cidade);
             Assert.Equal("SP", proposta.Uf);
-            Assert.Equal("0020", proposta.CodigoConveniada);
+            Assert.Equal(1, proposta.ConveniadaId);
             Assert.Equal(TipoOperacao.Novo, proposta.TipoOperacao);
             Assert.Equal("987654321", proposta.Matricula);
             Assert.Equal(3000, proposta.ValorRendimento);
@@ -97,7 +89,7 @@ namespace Consignado.TesteUnidade
             Assert.Equal("001", proposta.Banco);
             Assert.Equal("1234", proposta.Agencia);
             Assert.Equal("56789-0", proposta.Conta);
-            Assert.Equal("CC", proposta.TipoConta);
+            Assert.Equal(Tipoconta.ContaCorrente, proposta.TipoConta);
         }
     }
 }

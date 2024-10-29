@@ -1,8 +1,7 @@
-﻿using Consignado.HttpApi.Dominio.Entidade;
-using Consignado.HttpApi.Dominio.Infraestrutura;
+﻿using Consignado.HttpApi.Dominio.Inscricao.Infraestrutura;
 using CSharpFunctionalExtensions;
 
-namespace Consignado.HttpApi.Dominio.Aplicacao
+namespace Consignado.HttpApi.Dominio.Inscricao.Aplicacao
 {
     public class GravarPropostaHandler
     {
@@ -61,7 +60,7 @@ namespace Consignado.HttpApi.Dominio.Aplicacao
                 tipoConta: command.TipoConta,
                 conveniada.Value);
 
-            if(propostaResult.IsFailure)
+            if (propostaResult.IsFailure)
                 return Result.Failure<Proposta>(propostaResult.Error);
 
             //Salvar Proposta

@@ -2,7 +2,7 @@
 using CSharpFunctionalExtensions;
 using Microsoft.IdentityModel.Tokens;
 
-namespace Consignado.HttpApi.Dominio.Entidade
+namespace Consignado.HttpApi.Dominio.Inscricao
 {
     public class Proposta
     {
@@ -19,7 +19,7 @@ namespace Consignado.HttpApi.Dominio.Entidade
             string numero,
             string cidade,
             string uf,
-            string codigoConveniada,
+            int conveniadaId,
             TipoOperacao tipoOperacao,
             string matricula,
             decimal valorRendimento,
@@ -29,7 +29,7 @@ namespace Consignado.HttpApi.Dominio.Entidade
             string banco,
             string agencia,
             string conta,
-            string tipoConta,
+            Tipoconta tipoConta,
             TipoAssinatura tipoAssinatura,
             SituacaoProposta situacao)
         {
@@ -45,7 +45,7 @@ namespace Consignado.HttpApi.Dominio.Entidade
             Numero = numero;
             Cidade = cidade;
             Uf = uf;
-            CodigoConveniada = codigoConveniada;
+            ConveniadaId = conveniadaId;
             TipoOperacao = tipoOperacao;
             Matricula = matricula;
             ValorRendimento = valorRendimento;
@@ -57,7 +57,7 @@ namespace Consignado.HttpApi.Dominio.Entidade
             Conta = conta;
             TipoConta = tipoConta;
             TipoAssinatura = tipoAssinatura;
-            Situacao = situacao; 
+            Situacao = situacao;
         }
 
         public Guid NumeroProposta { get; }
@@ -72,7 +72,7 @@ namespace Consignado.HttpApi.Dominio.Entidade
         public string Numero { get; }
         public string Cidade { get; }
         public string Uf { get; }
-        public string CodigoConveniada { get; }
+        public int ConveniadaId { get; }
         public TipoOperacao TipoOperacao { get; }
         public string Matricula { get; }
         public decimal ValorRendimento { get; }
@@ -82,9 +82,10 @@ namespace Consignado.HttpApi.Dominio.Entidade
         public string Banco { get; }
         public string Agencia { get; }
         public string Conta { get; }
-        public string TipoConta { get; }
+        public Tipoconta TipoConta { get; }
         public TipoAssinatura TipoAssinatura { get; }
-        public SituacaoProposta Situacao { get; set; }
+        public SituacaoProposta Situacao { get;}
+        public Conveniada Conveniada { get;}
 
         public static Result<Proposta> Criar(
             string cpfAgente,
@@ -107,7 +108,7 @@ namespace Consignado.HttpApi.Dominio.Entidade
             string banco,
             string agencia,
             string conta,
-            string tipoConta,
+            Tipoconta tipoConta,
             Conveniada conveniada)
         {
 
@@ -115,7 +116,7 @@ namespace Consignado.HttpApi.Dominio.Entidade
                 return Result.Failure<Proposta>("Conveniada não aceita Refinanciamento");
 
             //validar restriçao de valores de acordo com o convenio
-            if (!conveniada.Restricoes.IsNullOrEmpty() && conveniada.Restricoes.Any(restricao => restricao.Uf == uf && valorOperacao > restricao.ValorLimite))
+            if (!conveniada.Restricoes.IsNullOrEmpty() && conveniada.Restricoes.Any(restricao => restricao.UF == uf && valorOperacao > restricao.ValorLimite))
                 return Result.Failure<Proposta>("Conveniada com restricao para o valor solicitado");
 
             //somar a quantidade de parcelas a idade <= 80 anos
@@ -130,13 +131,6 @@ namespace Consignado.HttpApi.Dominio.Entidade
 
             var dddCorrespondeUf = DddUfMapping.DddToUf.TryGetValue(ddd, out var ufDoDdd) && ufDoDdd == uf;
 
-            var tipoAssinatura = (ddd, uf) switch
-            {
-                _ when UfComAssinaturaHibrida.Ufs.Contains(uf) => TipoAssinatura.Hibrida,  // Assinatura Híbrida se a UF estiver na lista
-                _ when dddCorrespondeUf => TipoAssinatura.Eletronica,       // Assinatura Eletrônica se o DDD for igual à UF de Residência
-                _ => TipoAssinatura.Figital                                 // Assinatura Figital se DDD for diferente da UF de Residência
-            };
-
             var proposta = new Proposta(
                 Guid.NewGuid(),
                 cpfAgente,
@@ -150,7 +144,7 @@ namespace Consignado.HttpApi.Dominio.Entidade
                 numero,
                 cidade,
                 uf,
-                conveniada.Codigo,
+                conveniada.Id,
                 tipoOperacao,
                 matricula,
                 valorRendimento,
@@ -161,15 +155,26 @@ namespace Consignado.HttpApi.Dominio.Entidade
                 agencia,
                 conta,
                 tipoConta,
-                tipoAssinatura,
+                tipoAssinatura: ObterTipoAssinatura(ddd, uf, dddCorrespondeUf),
                 SituacaoProposta.EmAnalise
             );
 
             return Result.Success(proposta);
+        }
+
+        public static TipoAssinatura ObterTipoAssinatura(string ddd, string uf, bool dddCorrespondeUf)
+        {
+            return (ddd, uf) switch
+            {
+                _ when UfComAssinaturaHibrida.Ufs.Contains(uf) => TipoAssinatura.Hibrida,  // Assinatura Híbrida se a UF estiver na lista
+                _ when dddCorrespondeUf => TipoAssinatura.Eletronica,                      // Assinatura Eletrônica se o DDD for igual à UF de Residência
+                _ => TipoAssinatura.Figital                                                 // Assinatura Figital se DDD for diferente da UF de Residência
+            };
         }
     }
 
     public enum TipoOperacao { Novo, Portabilidade, Refinanciamento }
     public enum TipoAssinatura { Eletronica, Hibrida, Figital }
     public enum SituacaoProposta { EmAnalise, Aprovada, Recusada }
+    public enum Tipoconta { Poupanca, ContaCorrente, CartaoMagnetico }
 }

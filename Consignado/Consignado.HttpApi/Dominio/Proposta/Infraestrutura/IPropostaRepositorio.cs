@@ -1,7 +1,6 @@
-﻿using Consignado.HttpApi.Dominio.Entidade;
-using CSharpFunctionalExtensions;
+﻿using CSharpFunctionalExtensions;
 
-namespace Consignado.HttpApi.Dominio.Infraestrutura
+namespace Consignado.HttpApi.Dominio.Inscricao.Infraestrutura
 {
     public interface IPropostaRepositorio
     {

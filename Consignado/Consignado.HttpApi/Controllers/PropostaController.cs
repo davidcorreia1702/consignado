@@ -1,6 +1,6 @@
-using Consignado.HttpApi.Dominio.Aplicacao;
-using Consignado.HttpApi.Dominio.Entidade;
-using Consignado.HttpApi.Dominio.Infraestrutura;
+using Consignado.HttpApi.Dominio.Inscricao;
+using Consignado.HttpApi.Dominio.Inscricao.Aplicacao;
+using Consignado.HttpApi.Dominio.Inscricao.Infraestrutura;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using System.ComponentModel.DataAnnotations;
@@ -15,7 +15,7 @@ namespace Consignado.Controllers
     {
         public record MovaPropostaModel(string CpfAgente, string Cpf, DateTime DataNascimento ,string DDD, string Telefone, string Email, string Cep, string Endereco, 
             string Numero, string Cidade, string Uf, string CodigoConveniada, TipoOperacao TipoOperacao, string Prazo, decimal ValorOperacao, 
-            decimal Prestacao, string Matricula, decimal ValorRendimento, string Banco, string Agencia, string Conta, string TipoConta);
+            decimal Prestacao, string Matricula, decimal ValorRendimento, string Banco, string Agencia, string Conta, Tipoconta TipoConta);
 
         [HttpPost(Name = "gerar-proposta")]
         public async Task<IActionResult> GerarProposta(

@@ -1,4 +1,4 @@
-using Consignado.HttpApi.Dominio.Infraestrutura;
+using Consignado.HttpApi.Dominio.Inscricao.Infraestrutura;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);

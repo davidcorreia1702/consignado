@@ -1,8 +1,7 @@
-﻿using Consignado.HttpApi.Dominio.Entidade;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using static Consignado.Controllers.PropostaController;
 
-namespace Consignado.HttpApi.Dominio.Aplicacao
+namespace Consignado.HttpApi.Dominio.Inscricao.Aplicacao
 {
     public class GravarPropostaCommand
     {
@@ -57,7 +56,7 @@ namespace Consignado.HttpApi.Dominio.Aplicacao
         public string Conta { get; set; }
 
         [Required(ErrorMessage = "O tipo de conta é obrigatório")]
-        public string TipoConta { get; set; }
+        public Tipoconta TipoConta { get; set; }
 
         public GravarPropostaCommand(MovaPropostaModel model)
         {

@@ -1,4 +1,4 @@
-﻿namespace Consignado.HttpApi.Dominio.Entidade
+﻿namespace Consignado.HttpApi.Dominio.Inscricao
 {
     public record Agente
     {

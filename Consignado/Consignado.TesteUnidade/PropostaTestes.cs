@@ -1,5 +1,4 @@
-﻿using Consignado.HttpApi.Dominio.Aplicacao;
-using Consignado.HttpApi.Dominio.Entidade;
+﻿using Consignado.HttpApi.Dominio.Inscricao;
 
 namespace Consignado.TesteUnidade
 {
@@ -9,18 +8,9 @@ namespace Consignado.TesteUnidade
         public void Gravar_QuandoSatisfazerTodasAsRegrasEUfDevemTerAssinaturaHibrida_DeveSalvar()
         {
             // Arrange
-            var conveniada = new Conveniada
-            {
-                Codigo = "0020",
-                Id = 1,
-                Nome = "INSS",
-                AceitaRefinanciamento = true,
-                Restricoes = new List<ConveniadaRestricao>
-                    {
-                        new ConveniadaRestricao { Uf = "SP", ValorLimite = 100000 },
-                        new ConveniadaRestricao { Uf = "RS", ValorLimite = 500000 }
-                    }
-            };
+            var conveniada = new Conveniada(1, "INSS", "0020", aceitaRefinanciamento: true);
+            conveniada.AdicionarRestricao(new ConveniadaUfRestricao("SP", 100000));
+            conveniada.AdicionarRestricao(new ConveniadaUfRestricao("RS", 500000));
 
             // Act
             var resultado = Proposta.Criar(
@@ -44,7 +34,7 @@ namespace Consignado.TesteUnidade
                 banco: "001",
                 agencia: "1234",
                 conta: "56789-0",
-                tipoConta: "CC", 
+                tipoConta: Tipoconta.ContaCorrente, 
                 conveniada);
 
             // Assert
@@ -61,7 +51,7 @@ namespace Consignado.TesteUnidade
             Assert.Equal("123", proposta.Numero);
             Assert.Equal("São Paulo", proposta.Cidade);
             Assert.Equal("SP", proposta.Uf);
-            Assert.Equal("0020", proposta.CodigoConveniada);
+            Assert.Equal(conveniada.Id, proposta.ConveniadaId);
             Assert.Equal(TipoOperacao.Novo, proposta.TipoOperacao);
             Assert.Equal("987654321", proposta.Matricula);
             Assert.Equal(3000, proposta.ValorRendimento);
@@ -71,7 +61,7 @@ namespace Consignado.TesteUnidade
             Assert.Equal("001", proposta.Banco);
             Assert.Equal("1234", proposta.Agencia);
             Assert.Equal("56789-0", proposta.Conta);
-            Assert.Equal("CC", proposta.TipoConta);
+            Assert.Equal(Tipoconta.ContaCorrente, proposta.TipoConta);
             Assert.Equal(TipoAssinatura.Hibrida, proposta.TipoAssinatura);
         }
 
@@ -79,18 +69,9 @@ namespace Consignado.TesteUnidade
         public void Gravar_QuandoSatisfazerTodasAsRegrasEUfsIguas_DeveSalvar()
         {
             // Arrange
-            var conveniada = new Conveniada
-            {
-                Codigo = "0020",
-                Id = 1,
-                Nome = "INSS",
-                AceitaRefinanciamento = true,
-                Restricoes = new List<ConveniadaRestricao>
-                    {
-                        new ConveniadaRestricao { Uf = "SP", ValorLimite = 100000 },
-                        new ConveniadaRestricao { Uf = "RS", ValorLimite = 500000 }
-                    }
-            };
+            var conveniada = new Conveniada(1, "INSS", "0020", aceitaRefinanciamento: true);
+            conveniada.AdicionarRestricao(new ConveniadaUfRestricao("SP", 100000));
+            conveniada.AdicionarRestricao(new ConveniadaUfRestricao("RS", 500000));
 
             // Act
             var resultado = Proposta.Criar(
@@ -114,7 +95,7 @@ namespace Consignado.TesteUnidade
                 banco: "001",
                 agencia: "1234",
                 conta: "56789-0",
-                tipoConta: "CC",
+                tipoConta: Tipoconta.ContaCorrente,
                 conveniada);
 
             // Assert
@@ -131,7 +112,7 @@ namespace Consignado.TesteUnidade
             Assert.Equal("123", proposta.Numero);
             Assert.Equal("Rio de Janeiro", proposta.Cidade);
             Assert.Equal("RJ", proposta.Uf);
-            Assert.Equal("0020", proposta.CodigoConveniada);
+            Assert.Equal(conveniada.Id, proposta.ConveniadaId);
             Assert.Equal(TipoOperacao.Novo, proposta.TipoOperacao);
             Assert.Equal("987654321", proposta.Matricula);
             Assert.Equal(3000, proposta.ValorRendimento);
@@ -141,7 +122,7 @@ namespace Consignado.TesteUnidade
             Assert.Equal("001", proposta.Banco);
             Assert.Equal("1234", proposta.Agencia);
             Assert.Equal("56789-0", proposta.Conta);
-            Assert.Equal("CC", proposta.TipoConta);
+            Assert.Equal(Tipoconta.ContaCorrente, proposta.TipoConta);
             Assert.Equal(TipoAssinatura.Eletronica, proposta.TipoAssinatura);
         }
 
@@ -149,18 +130,10 @@ namespace Consignado.TesteUnidade
         public void Gravar_QuandoSatisfazerTodasAsRegrasEUfsDiferentes_DeveSalvar()
         {
             // Arrange
-            var conveniada = new Conveniada
-            {
-                Codigo = "0020",
-                Id = 1,
-                Nome = "INSS",
-                AceitaRefinanciamento = true,
-                Restricoes = new List<ConveniadaRestricao>
-                    {
-                        new ConveniadaRestricao { Uf = "SP", ValorLimite = 100000 },
-                        new ConveniadaRestricao { Uf = "RS", ValorLimite = 500000 }
-                    }
-            };
+            var conveniada = new Conveniada(1, "INSS", "0020", aceitaRefinanciamento: true);
+            conveniada.AdicionarRestricao(new ConveniadaUfRestricao("SP", 100000));
+            conveniada.AdicionarRestricao(new ConveniadaUfRestricao("RS", 500000));
+
 
             // Act
             var resultado = Proposta.Criar(
@@ -184,7 +157,7 @@ namespace Consignado.TesteUnidade
                 banco: "001",
                 agencia: "1234",
                 conta: "56789-0",
-                tipoConta: "CC",
+                tipoConta: Tipoconta.ContaCorrente,
                 conveniada);
 
             // Assert
@@ -201,7 +174,7 @@ namespace Consignado.TesteUnidade
             Assert.Equal("123", proposta.Numero);
             Assert.Equal("Recife", proposta.Cidade);
             Assert.Equal("PE", proposta.Uf);
-            Assert.Equal("0020", proposta.CodigoConveniada);
+            Assert.Equal(conveniada.Id, proposta.ConveniadaId);
             Assert.Equal(TipoOperacao.Novo, proposta.TipoOperacao);
             Assert.Equal("987654321", proposta.Matricula);
             Assert.Equal(3000, proposta.ValorRendimento);
@@ -211,7 +184,7 @@ namespace Consignado.TesteUnidade
             Assert.Equal("001", proposta.Banco);
             Assert.Equal("1234", proposta.Agencia);
             Assert.Equal("56789-0", proposta.Conta);
-            Assert.Equal("CC", proposta.TipoConta);
+            Assert.Equal(Tipoconta.ContaCorrente, proposta.TipoConta);
             Assert.Equal(TipoAssinatura.Figital, proposta.TipoAssinatura);
         }
 
@@ -219,18 +192,9 @@ namespace Consignado.TesteUnidade
         public void GravarPropostaRefinanciamento_QuandoConveniadaNaoPermiteRefinanciamento_DeveFalhar()
         {
             // Arrange
-            var conveniada = new Conveniada
-            {
-                Codigo = "0020",
-                Id = 1,
-                Nome = "INSS",
-                AceitaRefinanciamento = false,
-                Restricoes = new List<ConveniadaRestricao>
-                    {
-                        new ConveniadaRestricao { Uf = "SP", ValorLimite = 100000 },
-                        new ConveniadaRestricao { Uf = "RS", ValorLimite = 500000 }
-                    }
-            };
+            var conveniada = new Conveniada(1, "INSS", "0020", aceitaRefinanciamento: false);
+            conveniada.AdicionarRestricao(new ConveniadaUfRestricao("SP", 100000));
+            conveniada.AdicionarRestricao(new ConveniadaUfRestricao("RS", 500000));
 
             //Act
             var resultado = Proposta.Criar(
@@ -254,7 +218,7 @@ namespace Consignado.TesteUnidade
                 banco: "001",
                 agencia: "1234",
                 conta: "56789-0",
-                tipoConta: "CC",
+                tipoConta: Tipoconta.ContaCorrente,
                 conveniada);
 
             // Assert
@@ -266,18 +230,9 @@ namespace Consignado.TesteUnidade
         public void Gravar_QuandoValorOperacaoExcedeRestricaoValorLimiteConveniada_DeveFalhar()
         {
             // Arrange
-            var conveniada = new Conveniada
-            {
-                Codigo = "0020",
-                Id = 1,
-                Nome = "INSS",
-                AceitaRefinanciamento = true,
-                Restricoes = new List<ConveniadaRestricao>
-                    {
-                        new ConveniadaRestricao { Uf = "SP", ValorLimite = 10000 },
-                        new ConveniadaRestricao { Uf = "RS", ValorLimite = 500000 }
-                    }
-            };
+            var conveniada = new Conveniada(1, "INSS", "0020", aceitaRefinanciamento: true);
+            conveniada.AdicionarRestricao(new ConveniadaUfRestricao("SP", 10000));
+            conveniada.AdicionarRestricao(new ConveniadaUfRestricao("RS", 500000));
 
             //Act
             var resultado = Proposta.Criar(
@@ -301,7 +256,7 @@ namespace Consignado.TesteUnidade
                 banco: "001",
                 agencia: "1234",
                 conta: "56789-0",
-                tipoConta: "CC",
+                tipoConta: Tipoconta.ContaCorrente,
                 conveniada);
 
             // Assert
@@ -313,18 +268,9 @@ namespace Consignado.TesteUnidade
         public void Gravar_QuandoIdadeUltrapassa80AnosUltimaParcela_DeveFalhar()
         {
             // Arrange
-            var conveniada = new Conveniada
-            {
-                Codigo = "0020",
-                Id = 1,
-                Nome = "INSS",
-                AceitaRefinanciamento = true,
-                Restricoes = new List<ConveniadaRestricao>
-                    {
-                        new ConveniadaRestricao { Uf = "SP", ValorLimite = 100000 },
-                        new ConveniadaRestricao { Uf = "RS", ValorLimite = 500000 }
-                    }
-            };
+            var conveniada = new Conveniada(1, "INSS", "0020", aceitaRefinanciamento: true);
+            conveniada.AdicionarRestricao(new ConveniadaUfRestricao("SP", 100000));
+            conveniada.AdicionarRestricao(new ConveniadaUfRestricao("RS", 500000));
 
             // Act
             var resultado = Proposta.Criar(
@@ -348,7 +294,7 @@ namespace Consignado.TesteUnidade
                 banco: "001",
                 agencia: "1234",
                 conta: "56789-0",
-                tipoConta: "CC",
+                tipoConta: Tipoconta.ContaCorrente,
                 conveniada);
 
             // Assert
