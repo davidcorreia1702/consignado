@@ -2,8 +2,9 @@
 using Microsoft.Extensions.Logging;
 using Dapper;
 using CSharpFunctionalExtensions;
+using Consignado.Api.SeedWork.EFCore;
 
-namespace Consignado.HttpApi.Dominio.Inscricao.Infraestrutura
+namespace Consignado.Api.Propostas.Repositorio
 {
     public class PropostaRepositorio : IPropostaRepositorio
     {

@@ -1,6 +1,6 @@
-﻿namespace Consignado.HttpApi.Dominio.Proposta
+﻿namespace Consignado.Api.Propostas
 {
-    public class UnidadeFederativa
+    public class UnidadeFederativa : AgregateRoot
     {
         public string Sigla { get; private set; }
         public List<DDD> Ddds { get; set; }

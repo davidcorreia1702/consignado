@@ -1,8 +1,6 @@
-﻿using Consignado.HttpApi.Comum;
-using CSharpFunctionalExtensions;
-using Microsoft.IdentityModel.Tokens;
+﻿using CSharpFunctionalExtensions;
 
-namespace Consignado.HttpApi.Dominio.Proposta
+namespace Consignado.Api.Propostas
 {
     public class Proposta
     {

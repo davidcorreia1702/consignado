@@ -1,8 +1,9 @@
-﻿using CSharpFunctionalExtensions;
+﻿using Consignado.Api.Propostas;
+using CSharpFunctionalExtensions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Consignado.HttpApi.Dominio.Inscricao.Infraestrutura.Mapeamento
+namespace Consignado.Api.SeedWork.EFCore.Mappings
 {
     public class ConveniadaMap : IEntityTypeConfiguration<Conveniada>
     {

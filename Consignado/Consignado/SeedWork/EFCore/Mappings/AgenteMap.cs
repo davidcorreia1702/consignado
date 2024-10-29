@@ -1,8 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Consignado.Api.Propostas;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
-namespace Consignado.HttpApi.Dominio.Inscricao.Infraestrutura.Mapeamento
+namespace Consignado.Api.SeedWork.EFCore.Mappings
 {
     public class AgenteMap : IEntityTypeConfiguration<Agente>
     {

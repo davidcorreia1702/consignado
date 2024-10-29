@@ -1,7 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations;
-using static Consignado.Controllers.PropostaController;
+﻿using Consignado.Api.Propostas.Enum;
+using System.ComponentModel.DataAnnotations;
 
-namespace Consignado.HttpApi.Dominio.Inscricao.Aplicacao
+namespace Consignado.Api.Propostas.Command
 {
     public class GravarPropostaCommand
     {
@@ -58,30 +58,51 @@ namespace Consignado.HttpApi.Dominio.Inscricao.Aplicacao
         [Required(ErrorMessage = "O tipo de conta é obrigatório")]
         public Tipoconta TipoConta { get; set; }
 
-        public GravarPropostaCommand(MovaPropostaModel model)
+        public GravarPropostaCommand(
+                string cpfAgente, 
+                string cpf, 
+                string ddd, 
+                DateTime dataNascimento, 
+                string telefone, 
+                string email, 
+                string cep, 
+                string endereco, 
+                string numero, 
+                string cidade, 
+                string uf, string codigoConveniada, 
+                TipoOperacao tipoOperacao, 
+                string prazo, 
+                decimal valorOperacao, 
+                decimal prestacao, 
+                string matricula,
+                decimal valorRendimento, 
+                string banco, 
+                string agencia, 
+                string conta, 
+                Tipoconta tipoConta)
         {
-            CpfAgente = model.CpfAgente;
-            Cpf = model.Cpf;
-            DDD = model.DDD;
-            DataNascimento = model.DataNascimento;
-            Telefone = model.Telefone;
-            Email = model.Email;
-            Cep = model.Cep;
-            Endereco = model.Endereco;
-            Numero = model.Numero;
-            Cidade = model.Cidade;
-            Uf = model.Uf;
-            CodigoConveniada = model.CodigoConveniada;
-            TipoOperacao = model.TipoOperacao;
-            Prazo = model.Prazo;
-            ValorOperacao = model.ValorOperacao;
-            Prestacao = model.Prestacao;
-            Matricula = model.Matricula;
-            ValorRendimento = model.ValorRendimento;
-            Banco = model.Banco;
-            Agencia = model.Agencia;
-            Conta = model.Conta;
-            TipoConta = model.TipoConta;
+            CpfAgente = cpfAgente;
+            Cpf = cpf;
+            DDD = ddd;
+            DataNascimento = dataNascimento;
+            Telefone = telefone;
+            Email = email;
+            Cep = cep;
+            Endereco = endereco;
+            Numero = numero;
+            Cidade = cidade;
+            Uf = uf;
+            CodigoConveniada = codigoConveniada;
+            TipoOperacao = tipoOperacao;
+            Prazo = prazo;
+            ValorOperacao = valorOperacao;
+            Prestacao = prestacao;
+            Matricula = matricula;
+            ValorRendimento = valorRendimento;
+            Banco = banco;
+            Agencia = agencia;
+            Conta = conta;
+            TipoConta = tipoConta;
         }
     }
 }

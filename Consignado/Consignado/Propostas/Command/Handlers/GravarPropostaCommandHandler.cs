@@ -1,7 +1,8 @@
-﻿using Consignado.HttpApi.Dominio.Inscricao.Infraestrutura;
+﻿
+using Consignado.Api.Propostas.Repositorio;
 using CSharpFunctionalExtensions;
 
-namespace Consignado.HttpApi.Dominio.Inscricao.Aplicacao
+namespace Consignado.Api.Propostas.Command
 {
     public class GravarPropostaHandler
     {

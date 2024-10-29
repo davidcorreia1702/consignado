@@ -1,4 +1,4 @@
-﻿namespace Consignado.HttpApi.Dominio.Proposta
+﻿namespace Consignado.Api.Propostas
 {
     public record ConveniadaUfRestricao
     {
@@ -11,7 +11,7 @@
 
         protected ConveniadaUfRestricao()
         {
-            
+
         }
 
         public ConveniadaUfRestricao(string uf, decimal valorLimite)
