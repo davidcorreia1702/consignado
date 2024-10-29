@@ -3,7 +3,7 @@ using Microsoft.Extensions.Logging;
 using Dapper;
 using CSharpFunctionalExtensions;
 
-namespace Consignado.HttpApi.Dominio.Inscricao.Infraestrutura
+namespace Consignado.HttpApi.Dominio.Propostas.Infraestrutura
 {
     public class PropostaRepositorio : IPropostaRepositorio
     {

@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System.Reflection.Emit;
 using static Dapper.SqlMapper;
 
-namespace Consignado.HttpApi.Dominio.Inscricao.Infraestrutura.Mapeamento
+namespace Consignado.HttpApi.Dominio.Propostas.Infraestrutura.Mapeamento
 {
     public class ConveniadaUfRestricaoMap : IEntityTypeConfiguration<ConveniadaUfRestricao>
     {

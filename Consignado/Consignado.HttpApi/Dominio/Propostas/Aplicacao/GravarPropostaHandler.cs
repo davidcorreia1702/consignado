@@ -1,16 +1,20 @@
-﻿using Consignado.HttpApi.Dominio.Inscricao.Infraestrutura;
+﻿using Consignado.HttpApi.Dominio.Propostas.Infraestrutura;
+using Consignado.HttpApi.Dominio.Regras.Infra.Mapeamento;
 using CSharpFunctionalExtensions;
 
-namespace Consignado.HttpApi.Dominio.Inscricao.Aplicacao
+namespace Consignado.HttpApi.Dominio.Propostas.Aplicacao
 {
     public class GravarPropostaHandler
     {
         private readonly IPropostaRepositorio _propostaRepositorio;
+        private readonly IRegraPorConveniadaRepositorio _regraPorConveniadaRepositorio;
 
         public GravarPropostaHandler(
-            IPropostaRepositorio propostaRepositorio)
+            IPropostaRepositorio propostaRepositorio,
+            IRegraPorConveniadaRepositorio regraPorConveniadaRepositorio)
         {
             _propostaRepositorio = propostaRepositorio;
+            _regraPorConveniadaRepositorio = regraPorConveniadaRepositorio;
         }
 
         public async Task<Result<Proposta>> Handle(GravarPropostaCommand command, CancellationToken cancellationToken)
@@ -36,6 +40,8 @@ namespace Consignado.HttpApi.Dominio.Inscricao.Aplicacao
             if (conveniada.HasNoValue)
                 return Result.Failure<Proposta>("Conveniada inválida");
 
+            var regras = await _regraPorConveniadaRepositorio.ObterRegrasPorConveniadaAsync(conveniada.Value.Id);
+
             var propostaResult = Proposta.Criar(
                 cpfAgente: command.CpfAgente,
                 cpf: command.Cpf,
@@ -58,7 +64,8 @@ namespace Consignado.HttpApi.Dominio.Inscricao.Aplicacao
                 agencia: command.Agencia,
                 conta: command.Conta,
                 tipoConta: command.TipoConta,
-                conveniada.Value);
+                conveniada.Value,
+                regras.Select(n => n.Regra));
 
             if (propostaResult.IsFailure)
                 return Result.Failure<Proposta>(propostaResult.Error);

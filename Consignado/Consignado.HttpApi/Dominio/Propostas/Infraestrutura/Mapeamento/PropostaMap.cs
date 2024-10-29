@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
-namespace Consignado.HttpApi.Dominio.Inscricao.Infraestrutura.Mapeamento
+namespace Consignado.HttpApi.Dominio.Propostas.Infraestrutura.Mapeamento
 {
     public class PropostaMap : IEntityTypeConfiguration<Proposta>
     {

@@ -1,6 +1,7 @@
-using Consignado.HttpApi.Dominio.Inscricao;
-using Consignado.HttpApi.Dominio.Inscricao.Aplicacao;
-using Consignado.HttpApi.Dominio.Inscricao.Infraestrutura;
+using Consignado.HttpApi.Dominio.Propostas;
+using Consignado.HttpApi.Dominio.Propostas.Aplicacao;
+using Consignado.HttpApi.Dominio.Propostas.Infraestrutura;
+using Consignado.HttpApi.Dominio.Regras.Infra.Mapeamento;
 using Moq;
 using static Consignado.Controllers.PropostaController;
 
@@ -12,28 +13,29 @@ namespace Consignado.TesteUnidade
         public async Task GravarProposta_QuandoSatisfazerTodasAsRegras_DeveSalvar()
         {
             //Arrange
-            var mockRepositorio = new Mock<IPropostaRepositorio>();
+            var mockPropostaRepositorio = new Mock<IPropostaRepositorio>();
+            var mockRegraPorConveniadaRepositorio = new Mock<IRegraPorConveniadaRepositorio>();
 
-            mockRepositorio
+            mockPropostaRepositorio
                 .Setup(n => n.ExistePropostaEmAberto(It.IsAny<string>()))
                 .ReturnsAsync(false);
-            mockRepositorio.Setup(n => n.VerificarCpfBloqueado(It.IsAny<string>()))
+            mockPropostaRepositorio.Setup(n => n.VerificarCpfBloqueado(It.IsAny<string>()))
                 .ReturnsAsync(false);
-            mockRepositorio.Setup(n => n.VerificarAgenteInativo(It.IsAny<string>()))
+            mockPropostaRepositorio.Setup(n => n.VerificarAgenteInativo(It.IsAny<string>()))
                 .ReturnsAsync(false);
 
             var conveniada = new Conveniada(1, "INSS", "0020", aceitaRefinanciamento: true);
             conveniada.AdicionarRestricao(new ConveniadaUfRestricao("SP", 100000));
             conveniada.AdicionarRestricao(new ConveniadaUfRestricao("RS", 500000 ));
-            mockRepositorio.Setup(n => n.RecuperarConveniada(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+            mockPropostaRepositorio.Setup(n => n.RecuperarConveniada(It.IsAny<string>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(conveniada);
 
-            mockRepositorio
+            mockPropostaRepositorio
                 .Setup(r => r.Adicionar(It.IsAny<Proposta>(), It.IsAny<CancellationToken>()))
                 .Returns(Task.CompletedTask);
-            mockRepositorio.Setup(r => r.Save()).Returns(Task.CompletedTask);
+            mockPropostaRepositorio.Setup(r => r.Save()).Returns(Task.CompletedTask);
 
-            var handler = new GravarPropostaHandler(mockRepositorio.Object);
+            var handler = new GravarPropostaHandler(mockPropostaRepositorio.Object, mockRegraPorConveniadaRepositorio.Object);
 
             var command = new GravarPropostaCommand(new MovaPropostaModel(
                 CpfAgente: "12345678901",

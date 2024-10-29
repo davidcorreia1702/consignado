@@ -1,37 +1,44 @@
-using Consignado.HttpApi.Dominio.Inscricao.Infraestrutura;
+using Consignado.HttpApi.Dominio;
+using Consignado.HttpApi.Dominio.Propostas.Infraestrutura;
 using Microsoft.EntityFrameworkCore;
 
-var builder = WebApplication.CreateBuilder(args);
-
-// Add services to the container.
-builder.Services.AddScoped<IPropostaRepositorio, PropostaRepositorio>();
-
-builder.Services.AddDbContext<PropostaDbContext>(options =>
+internal class Program
 {
-    options.UseSqlServer(builder.Configuration.GetConnectionString("PropostasConnection"));
-    options.LogTo(Console.WriteLine, LogLevel.Information);
-    options.EnableDetailedErrors();
-    options.EnableSensitiveDataLogging();
-});
+    private static void Main(string[] args)
+    {
+        var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+        // Add services to the container.
+        builder.Services.AddScoped<IPropostaRepositorio, PropostaRepositorio>();
 
-var app = builder.Build();
+        builder.Services.AddDbContext<PropostaDbContext>(options =>
+        {
+            options.UseSqlServer(builder.Configuration.GetConnectionString("PropostasConnection"));
+            options.LogTo(Console.WriteLine, LogLevel.Information);
+            options.EnableDetailedErrors();
+            options.EnableSensitiveDataLogging();
+        });
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
+        builder.Services.AddControllers();
+        // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+        builder.Services.AddEndpointsApiExplorer();
+        builder.Services.AddSwaggerGen();
+
+        var app = builder.Build();
+
+        // Configure the HTTP request pipeline.
+        if (app.Environment.IsDevelopment())
+        {
+            app.UseSwagger();
+            app.UseSwaggerUI();
+        }
+
+        app.UseHttpsRedirection();
+
+        app.UseAuthorization();
+
+        app.MapControllers();
+
+        app.Run();
+    }
 }
-
-app.UseHttpsRedirection();
-
-app.UseAuthorization();
-
-app.MapControllers();
-
-app.Run();

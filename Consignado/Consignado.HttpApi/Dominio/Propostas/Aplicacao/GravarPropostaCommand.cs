@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using static Consignado.Controllers.PropostaController;
 
-namespace Consignado.HttpApi.Dominio.Inscricao.Aplicacao
+namespace Consignado.HttpApi.Dominio.Propostas.Aplicacao
 {
     public class GravarPropostaCommand
     {

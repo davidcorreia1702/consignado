@@ -1,4 +1,4 @@
-﻿namespace Consignado.HttpApi.Dominio.Inscricao
+﻿namespace Consignado.HttpApi.Dominio.Propostas
 {
     public record ConveniadaUfRestricao
     {

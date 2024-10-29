@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Consignado.HttpApi.Dominio.Inscricao.Infraestrutura.Mapeamento
+namespace Consignado.HttpApi.Dominio.Propostas.Infraestrutura.Mapeamento
 {
     public class ConveniadaMap : IEntityTypeConfiguration<Conveniada>
     {

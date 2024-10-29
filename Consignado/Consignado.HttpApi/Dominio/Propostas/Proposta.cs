@@ -1,8 +1,9 @@
 ﻿using Consignado.HttpApi.Comum;
+using Consignado.HttpApi.Dominio.Regras.RegrasPorConveniada;
 using CSharpFunctionalExtensions;
 using Microsoft.IdentityModel.Tokens;
 
-namespace Consignado.HttpApi.Dominio.Inscricao
+namespace Consignado.HttpApi.Dominio.Propostas
 {
     public class Proposta
     {
@@ -109,25 +110,17 @@ namespace Consignado.HttpApi.Dominio.Inscricao
             string agencia,
             string conta,
             Tipoconta tipoConta,
-            Conveniada conveniada)
+            Conveniada conveniada,
+            IEnumerable<IValidarProposta> regras)
         {
 
-            if (tipoOperacao == TipoOperacao.Refinanciamento && !conveniada.AceitaRefinanciamento)
-                return Result.Failure<Proposta>("Conveniada não aceita Refinanciamento");
-
-            //validar restriçao de valores de acordo com o convenio
-            if (!conveniada.Restricoes.IsNullOrEmpty() && conveniada.Restricoes.Any(restricao => restricao.UF == uf && valorOperacao > restricao.ValorLimite))
-                return Result.Failure<Proposta>("Conveniada com restricao para o valor solicitado");
-
-            //somar a quantidade de parcelas a idade <= 80 anos
-            var dataFutura = DateTime.Now.AddMonths(Convert.ToInt32(prazo));
-            var diferencaEmAnos = dataFutura.Year - dataNascimento.Year;
-
-            if (dataFutura < dataNascimento.AddYears(diferencaEmAnos))
-                diferencaEmAnos--;
-
-            if (diferencaEmAnos > 80)
-                return Result.Failure<Proposta>("Idade ao realizar a ultima parcela excede de 80 anos");
+            foreach (var regra in regras)
+            {
+                ValidacaoProposta validacaoProposta = new ValidacaoProposta { Conveniada = conveniada, TipoOperacao = tipoOperacao, Uf = uf, ValorOperacao = valorOperacao, Prazo = Convert.ToInt32(prazo), DataNascimento = dataNascimento };  
+                var resultado = regra.Validar(validacaoProposta);
+                if (resultado.IsFailure)
+                    return Result.Failure<Proposta>(resultado.Error);
+            }
 
             var dddCorrespondeUf = DddUfMapping.DddToUf.TryGetValue(ddd, out var ufDoDdd) && ufDoDdd == uf;
 

@@ -1,11 +1,8 @@
-using Consignado.HttpApi.Dominio.Inscricao;
-using Consignado.HttpApi.Dominio.Inscricao.Aplicacao;
-using Consignado.HttpApi.Dominio.Inscricao.Infraestrutura;
+using Consignado.HttpApi.Dominio.Propostas;
+using Consignado.HttpApi.Dominio.Propostas.Aplicacao;
+using Consignado.HttpApi.Dominio.Propostas.Infraestrutura;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace Consignado.Controllers
 {

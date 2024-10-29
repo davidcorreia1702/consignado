@@ -1,4 +1,5 @@
-﻿using Consignado.HttpApi.Dominio.Inscricao;
+﻿using Consignado.HttpApi.Dominio.Propostas;
+using Consignado.HttpApi.Dominio.Regras.RegrasPorConveniada;
 
 namespace Consignado.TesteUnidade
 {
@@ -11,6 +12,9 @@ namespace Consignado.TesteUnidade
             var conveniada = new Conveniada(1, "INSS", "0020", aceitaRefinanciamento: true);
             conveniada.AdicionarRestricao(new ConveniadaUfRestricao("SP", 100000));
             conveniada.AdicionarRestricao(new ConveniadaUfRestricao("RS", 500000));
+
+            
+
 
             // Act
             var resultado = Proposta.Criar(
@@ -35,7 +39,8 @@ namespace Consignado.TesteUnidade
                 agencia: "1234",
                 conta: "56789-0",
                 tipoConta: Tipoconta.ContaCorrente, 
-                conveniada);
+                conveniada,
+                obterRegrasBasicas());
 
             // Assert
             Assert.True(resultado.IsSuccess);
@@ -96,7 +101,8 @@ namespace Consignado.TesteUnidade
                 agencia: "1234",
                 conta: "56789-0",
                 tipoConta: Tipoconta.ContaCorrente,
-                conveniada);
+                conveniada,
+                obterRegrasBasicas());
 
             // Assert
             Assert.True(resultado.IsSuccess);
@@ -158,7 +164,8 @@ namespace Consignado.TesteUnidade
                 agencia: "1234",
                 conta: "56789-0",
                 tipoConta: Tipoconta.ContaCorrente,
-                conveniada);
+                conveniada,
+                obterRegrasBasicas());
 
             // Assert
             Assert.True(resultado.IsSuccess);
@@ -219,7 +226,8 @@ namespace Consignado.TesteUnidade
                 agencia: "1234",
                 conta: "56789-0",
                 tipoConta: Tipoconta.ContaCorrente,
-                conveniada);
+                conveniada,
+                obterRegrasBasicas());
 
             // Assert
             Assert.True(resultado.IsFailure);
@@ -257,7 +265,8 @@ namespace Consignado.TesteUnidade
                 agencia: "1234",
                 conta: "56789-0",
                 tipoConta: Tipoconta.ContaCorrente,
-                conveniada);
+                conveniada,
+                obterRegrasBasicas());
 
             // Assert
             Assert.True(resultado.IsFailure);
@@ -295,11 +304,22 @@ namespace Consignado.TesteUnidade
                 agencia: "1234",
                 conta: "56789-0",
                 tipoConta: Tipoconta.ContaCorrente,
-                conveniada);
+                conveniada,
+                obterRegrasBasicas());
 
             // Assert
             Assert.True(resultado.IsFailure);
             Assert.Equal("Idade ao realizar a ultima parcela excede de 80 anos", resultado.Error);
+        }
+
+        private IEnumerable<IValidarProposta> obterRegrasBasicas()
+        {
+            return new List<IValidarProposta>
+            {
+                new ValidacaoRestricaoValor(),
+                new ValidacaoPermiteRefinanciamento(),
+                new ValidacaoIdadeMaximaUltimaParcela(),
+            };
         }
     }
 }
