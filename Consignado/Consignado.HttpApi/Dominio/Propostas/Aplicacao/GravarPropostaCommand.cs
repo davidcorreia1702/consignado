@@ -58,7 +58,7 @@ namespace Consignado.HttpApi.Dominio.Propostas.Aplicacao
         [Required(ErrorMessage = "O tipo de conta é obrigatório")]
         public Tipoconta TipoConta { get; set; }
 
-        public GravarPropostaCommand(MovaPropostaModel model)
+        public GravarPropostaCommand(NovaPropostaModel model)
         {
             CpfAgente = model.CpfAgente;
             Cpf = model.Cpf;

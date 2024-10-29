@@ -37,7 +37,7 @@ namespace Consignado.TesteUnidade
 
             var handler = new GravarPropostaHandler(mockPropostaRepositorio.Object, mockRegraPorConveniadaRepositorio.Object);
 
-            var command = new GravarPropostaCommand(new MovaPropostaModel(
+            var command = new GravarPropostaCommand(new NovaPropostaModel(
                 CpfAgente: "12345678901",
                 Cpf: "12345678901",
                 DataNascimento: new DateTime(1980, 1, 1),

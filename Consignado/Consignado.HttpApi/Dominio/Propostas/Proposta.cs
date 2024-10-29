@@ -122,8 +122,6 @@ namespace Consignado.HttpApi.Dominio.Propostas
                     return Result.Failure<Proposta>(resultado.Error);
             }
 
-            var dddCorrespondeUf = DddUfMapping.DddToUf.TryGetValue(ddd, out var ufDoDdd) && ufDoDdd == uf;
-
             var proposta = new Proposta(
                 Guid.NewGuid(),
                 cpfAgente,
@@ -148,15 +146,17 @@ namespace Consignado.HttpApi.Dominio.Propostas
                 agencia,
                 conta,
                 tipoConta,
-                tipoAssinatura: ObterTipoAssinatura(ddd, uf, dddCorrespondeUf),
+                tipoAssinatura: ObterTipoAssinatura(ddd, uf),
                 SituacaoProposta.EmAnalise
             );
 
             return Result.Success(proposta);
         }
 
-        public static TipoAssinatura ObterTipoAssinatura(string ddd, string uf, bool dddCorrespondeUf)
+        public static TipoAssinatura ObterTipoAssinatura(string ddd, string uf)
         {
+            var dddCorrespondeUf = DddUfMapping.DddToUf.TryGetValue(ddd, out var ufDoDdd) && ufDoDdd == uf;
+
             return (ddd, uf) switch
             {
                 _ when UfComAssinaturaHibrida.Ufs.Contains(uf) => TipoAssinatura.Hibrida,  // Assinatura Híbrida se a UF estiver na lista

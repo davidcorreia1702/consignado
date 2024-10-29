@@ -10,13 +10,13 @@ namespace Consignado.Controllers
     [Route("[controller]")]
     public class PropostaController : ControllerBase
     {
-        public record MovaPropostaModel(string CpfAgente, string Cpf, DateTime DataNascimento ,string DDD, string Telefone, string Email, string Cep, string Endereco, 
+        public record NovaPropostaModel(string CpfAgente, string Cpf, DateTime DataNascimento ,string DDD, string Telefone, string Email, string Cep, string Endereco, 
             string Numero, string Cidade, string Uf, string CodigoConveniada, TipoOperacao TipoOperacao, string Prazo, decimal ValorOperacao, 
             decimal Prestacao, string Matricula, decimal ValorRendimento, string Banco, string Agencia, string Conta, Tipoconta TipoConta);
 
         [HttpPost(Name = "gerar-proposta")]
         public async Task<IActionResult> GerarProposta(
-            [FromBody] MovaPropostaModel input,
+            [FromBody] NovaPropostaModel input,
             [FromServices] PropostaRepositorio propostaRepositorio,
             [FromServices] GravarPropostaHandler handler,
             CancellationToken cancellationToken)
