@@ -13,9 +13,6 @@ namespace Consignado.TesteUnidade
             conveniada.AdicionarRestricao(new ConveniadaUfRestricao("SP", 100000));
             conveniada.AdicionarRestricao(new ConveniadaUfRestricao("RS", 500000));
 
-            
-
-
             // Act
             var resultado = Proposta.Criar(
                 cpfAgente: "12345678901",
