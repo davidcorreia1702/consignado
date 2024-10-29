@@ -1,6 +1,5 @@
-﻿using Consignado.HttpApi.Comum;
-using Consignado.HttpApi.Dominio.Strategies.RegrasPorConveniada;
-using Consignado.HttpApi.Dominio.Strategies.RegraTipoAssinatura;
+﻿using Consignado.HttpApi.Dominio.Strategies.RegrasPorConveniada;
+using Consignado.HttpApi.Dominio.Strategies.RegrasTipoAssinatura;
 using CSharpFunctionalExtensions;
 
 namespace Consignado.HttpApi.Dominio.Propostas

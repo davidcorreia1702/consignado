@@ -1,6 +1,6 @@
 ﻿using Consignado.HttpApi.Dominio.Propostas;
 
-namespace Consignado.HttpApi.Dominio.Strategies.RegraTipoAssinatura
+namespace Consignado.HttpApi.Dominio.Strategies.RegrasTipoAssinatura
 {
     public interface ITipoAssinaturaStrategy
     {

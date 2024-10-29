@@ -1,4 +1,4 @@
-﻿namespace Consignado.HttpApi.Dominio.Strategies.RegraTipoAssinatura
+﻿namespace Consignado.HttpApi.Dominio.Strategies.RegrasTipoAssinatura
 {
     public record ValidacaoTipoAssinatura
     {

@@ -1,6 +1,7 @@
 ﻿using Consignado.HttpApi.Dominio.Propostas;
+using Consignado.HttpApi.Dominio.Strategies.RegrasTipoAssinatura;
 
-namespace Consignado.HttpApi.Dominio.Strategies.RegraTipoAssinatura
+namespace Consignado.HttpApi.Dominio.Strategies.RegrasTipoAssinatura
 {
     public class AssinaturaEletronicaStrategy : ITipoAssinaturaStrategy
     {
